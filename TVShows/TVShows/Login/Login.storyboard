@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="cCm-JY-RnA">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Login View Controller-->
+        <scene sceneID="myt-sD-5oO">
+            <objects>
+                <viewController id="cCm-JY-RnA" customClass="LoginViewController" customModule="TVShows" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8Fq-n7-VDe">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="YSY-Bu-H8c">
+                                <rect key="frame" x="137.66666666666666" y="386" width="100" height="40"/>
+                                <subviews>
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="749" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="xvM-Qc-gW2">
+                                        <rect key="frame" x="0.0" y="10" width="31" height="20"/>
+                                        <color key="color" red="0.079360943150000002" green="0.47383551540000002" blue="0.80720574239999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </activityIndicatorView>
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xYA-Yw-BQw">
+                                        <rect key="frame" x="51" y="4.6666666666666856" width="51" height="31"/>
+                                        <color key="onTintColor" red="0.079360943150000002" green="0.47383551540000002" blue="0.80720574239999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <connections>
+                                            <action selector="touchUpInsideSwitchEvent:" destination="cCm-JY-RnA" eventType="touchUpInside" id="KB3-b9-hpV"/>
+                                        </connections>
+                                    </switch>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="Saw-os-5el"/>
+                                    <constraint firstAttribute="height" constant="40" id="vWV-Ra-VPL"/>
+                                </constraints>
+                            </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Times clicked: 0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="12" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vq4-lL-9m7">
+                                <rect key="frame" x="82.666666666666686" y="84" width="210" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Szh-ym-ohz"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="GillSans-Bold" family="Gill Sans" pointSize="26"/>
+                                <color key="textColor" red="0.080870605282827024" green="0.50963323220443302" blue="0.87664578045685282" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9yt-Ml-17j">
+                                <rect key="frame" x="20" y="658" width="335" height="80"/>
+                                <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="80" id="mt0-3n-qUn"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="GillSans-Bold" family="Gill Sans" pointSize="21"/>
+                                <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="50" maxY="0.0"/>
+                                <state key="normal" title="Increase counter" image="buttonIcon">
+                                    <color key="titleColor" red="0.079721594956169359" green="0.47598883699350558" blue="0.8108740482233503" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="TouchUpInsideButtonEvent:" destination="cCm-JY-RnA" eventType="touchUpInside" id="hlh-z1-xYP"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.92290508837995633" green="0.93438060166456549" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="YSY-Bu-H8c" firstAttribute="centerX" secondItem="8Fq-n7-VDe" secondAttribute="centerX" id="RwD-ZV-pbL"/>
+                            <constraint firstItem="Vq4-lL-9m7" firstAttribute="top" secondItem="yCX-m9-wtU" secondAttribute="top" constant="40" id="VUK-n4-Xom"/>
+                            <constraint firstItem="9yt-Ml-17j" firstAttribute="leading" secondItem="yCX-m9-wtU" secondAttribute="leading" constant="20" id="a8H-QR-kCP"/>
+                            <constraint firstItem="YSY-Bu-H8c" firstAttribute="centerY" secondItem="8Fq-n7-VDe" secondAttribute="centerY" id="dM0-rk-LiO"/>
+                            <constraint firstItem="Vq4-lL-9m7" firstAttribute="centerX" secondItem="8Fq-n7-VDe" secondAttribute="centerX" id="gyG-Mg-BwE"/>
+                            <constraint firstItem="yCX-m9-wtU" firstAttribute="trailing" secondItem="9yt-Ml-17j" secondAttribute="trailing" constant="20" id="kal-kH-N9P"/>
+                            <constraint firstItem="yCX-m9-wtU" firstAttribute="bottom" secondItem="9yt-Ml-17j" secondAttribute="bottom" constant="40" id="vEI-a8-hwG"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="yCX-m9-wtU"/>
+                    </view>
+                    <connections>
+                        <outlet property="View" destination="8Fq-n7-VDe" id="q0w-yf-dcj"/>
+                        <outlet property="counterLabel" destination="Vq4-lL-9m7" id="t8I-MW-r4n"/>
+                        <outlet property="incrementButton" destination="9yt-Ml-17j" id="SPQ-dx-uRT"/>
+                        <outlet property="myActivityIndicator" destination="xvM-Qc-gW2" id="P5m-Bv-XHm"/>
+                        <outlet property="mySwitch" destination="xYA-Yw-BQw" id="Rfp-Qu-kGO"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5Ah-7H-0M6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="154.40000000000001" y="170.46476761619192"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="buttonIcon" width="60" height="60"/>
+    </resources>
+</document>
