@@ -10,8 +10,8 @@
 		5C715FB020EE6F4400E36A61 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C715FAF20EE6F4400E36A61 /* AppDelegate.swift */; };
 		5C715FB720EE6F4600E36A61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C715FB620EE6F4600E36A61 /* Assets.xcassets */; };
 		5C715FBA20EE6F4600E36A61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C715FB820EE6F4600E36A61 /* LaunchScreen.storyboard */; };
-		5CC54AF320F36D3F00EC063D /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CC54AF220F36D3F00EC063D /* Login.storyboard */; };
-		5CC54AF520F36D6800EC063D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC54AF420F36D6800EC063D /* LoginViewController.swift */; };
+		5CD4B8F420FD657E000309A5 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CD4B8F320FD657E000309A5 /* Login.storyboard */; };
+		5CD4B8F620FD659E000309A5 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD4B8F520FD659E000309A5 /* LoginViewController.swift */; };
 		7BD6575A4E290E927D21AE7E /* Pods_TVShows.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5547BA5CD6C30B7F19014FA /* Pods_TVShows.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,8 +21,8 @@
 		5C715FB620EE6F4600E36A61 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5C715FB920EE6F4600E36A61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5C715FBB20EE6F4600E36A61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5CC54AF220F36D3F00EC063D /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
-		5CC54AF420F36D6800EC063D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		5CD4B8F320FD657E000309A5 /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
+		5CD4B8F520FD659E000309A5 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		9E72D561D095588A2D2D42D2 /* Pods-TVShows.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.release.xcconfig"; path = "Pods/Target Support Files/Pods-TVShows/Pods-TVShows.release.xcconfig"; sourceTree = "<group>"; };
 		B5547BA5CD6C30B7F19014FA /* Pods_TVShows.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TVShows.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C291D8AE13167F4CBFF71C87 /* Pods-TVShows.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TVShows/Pods-TVShows.debug.xcconfig"; sourceTree = "<group>"; };
@@ -73,8 +73,8 @@
 		5CC54AF120F36C0100EC063D /* Login */ = {
 			isa = PBXGroup;
 			children = (
-				5CC54AF220F36D3F00EC063D /* Login.storyboard */,
-				5CC54AF420F36D6800EC063D /* LoginViewController.swift */,
+				5CD4B8F320FD657E000309A5 /* Login.storyboard */,
+				5CD4B8F520FD659E000309A5 /* LoginViewController.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -158,7 +158,7 @@
 			files = (
 				5C715FBA20EE6F4600E36A61 /* LaunchScreen.storyboard in Resources */,
 				5C715FB720EE6F4600E36A61 /* Assets.xcassets in Resources */,
-				5CC54AF320F36D3F00EC063D /* Login.storyboard in Resources */,
+				5CD4B8F420FD657E000309A5 /* Login.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,10 +172,16 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-TVShows/Pods-TVShows-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/CodableAlamofire/CodableAlamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CodableAlamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -208,7 +214,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5CC54AF520F36D6800EC063D /* LoginViewController.swift in Sources */,
+				5CD4B8F620FD659E000309A5 /* LoginViewController.swift in Sources */,
 				5C715FB020EE6F4400E36A61 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
