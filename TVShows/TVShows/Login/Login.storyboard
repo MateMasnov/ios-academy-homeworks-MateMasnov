@@ -29,7 +29,7 @@
                                                 <rect key="frame" x="40" y="80" width="295" height="80"/>
                                             </imageView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="NY7-XI-9Ye" userLabel="User Stack View">
-                                                <rect key="frame" x="40" y="268" width="295" height="170"/>
+                                                <rect key="frame" x="40" y="260" width="295" height="170"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AYG-iR-yBc">
                                                         <rect key="frame" x="0.0" y="0.0" width="295" height="50"/>
@@ -77,7 +77,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="J7n-wI-Arb" userLabel="Login Stack View">
-                                                <rect key="frame" x="40" y="486.5" width="295" height="120.5"/>
+                                                <rect key="frame" x="40" y="478.5" width="295" height="120.5"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EIZ-P2-uKo">
                                                         <rect key="frame" x="0.0" y="0.0" width="295" height="50"/>
@@ -89,6 +89,9 @@
                                                         <state key="normal" title="Log in">
                                                             <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         </state>
+                                                        <connections>
+                                                            <action selector="loginAction:" destination="84I-cz-6vX" eventType="touchUpInside" id="srw-dE-i2c"/>
+                                                        </connections>
                                                     </button>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="UwJ-yi-cAh">
                                                         <rect key="frame" x="0.0" y="60" width="295" height="60.5"/>
@@ -117,7 +120,7 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="jmS-fc-Uoc" firstAttribute="top" secondItem="Vai-Pe-4uX" secondAttribute="top" constant="80" id="8t8-0y-hMo"/>
-                                            <constraint firstItem="NY7-XI-9Ye" firstAttribute="top" secondItem="jmS-fc-Uoc" secondAttribute="bottom" multiplier="1.05" constant="100" id="9U2-uJ-Ay2"/>
+                                            <constraint firstItem="NY7-XI-9Ye" firstAttribute="top" secondItem="jmS-fc-Uoc" secondAttribute="bottom" constant="100" id="9U2-uJ-Ay2"/>
                                             <constraint firstAttribute="trailing" secondItem="J7n-wI-Arb" secondAttribute="trailing" constant="40" id="AdJ-QK-jgX"/>
                                             <constraint firstItem="NY7-XI-9Ye" firstAttribute="leading" secondItem="Vai-Pe-4uX" secondAttribute="leading" constant="40" id="DIo-8v-1Rb"/>
                                             <constraint firstAttribute="trailing" secondItem="NY7-XI-9Ye" secondAttribute="trailing" constant="40" id="FwI-LR-bDH"/>

@@ -11,12 +11,13 @@ import UIKit
 class LoginViewController: UIViewController {
 
     //MARK: - Outlets -
-    @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var checkmarkButton: UIButton!
     @IBOutlet weak var createAccountButton: UIButton!
+    @IBOutlet weak var loginButton: UIButton!
     
+    //MARK: - Controller functions -
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,14 +29,17 @@ class LoginViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    //MARK: - IBActions -
+    //MARK: - Actions -
     @IBAction
-    func createAccountAction(_ sender: Any) {
-        
+    func createAccountAction(_ sender: UIButton) {
     }
     
     @IBAction
-    func checkmarkAction(_ sender: Any) {
+    func loginAction(_ sender: UIButton) {
+    }
+    
+    @IBAction
+    func checkmarkAction(_ sender: UIButton) {
         checkmarkButton.isSelected = !checkmarkButton.isSelected
     }
     
