@@ -2,65 +2,47 @@
 //  LoginViewController.swift
 //  TVShows
 //
-//  Created by Infinum Student Academy on 09/07/2018.
+//  Created by Infinum Student Academy on 17/07/2018.
 //  Copyright © 2018 Mate Masnov. All rights reserved.
 //
 
 import UIKit
 
 class LoginViewController: UIViewController {
+
+    //MARK: - Outlets -
+    @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var checkmarkButton: UIButton!
+    @IBOutlet weak var createAccountButton: UIButton!
+    @IBOutlet weak var loginButton: UIButton!
     
-    var numberOfClicks: Int = 0;
-    let sleepTime: Int = 3;
-    
-    @IBOutlet weak var mySwitch: UISwitch!
-    @IBOutlet weak var counterLabel: UILabel!
-    @IBOutlet weak var incrementButton: UIButton!
-    @IBOutlet weak var myActivityIndicator: UIActivityIndicatorView!
-    
+    //MARK: - Controller functions -
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        incrementButton.titleLabel?.adjustsFontSizeToFitWidth = true;
-        incrementButton.layer.cornerRadius = 20;
-        incrementButton.clipsToBounds = true;
-       
-        initializeAnimation(sleepTime: sleepTime);
+
         // Do any additional setup after loading the view.
     }
-
+   
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func touchUpInsideSwitchEvent(_ sender: UISwitch) {
-        switchControl();
-    }
-
-    func switchControl() -> Void {
-        if myActivityIndicator.isAnimating {
-            myActivityIndicator.stopAnimating()
-        } else {
-            myActivityIndicator.startAnimating();
-        }
+    //MARK: - Actions -
+    @IBAction
+    func createAccountAction(_ sender: UIButton) {
     }
     
-    @IBAction func TouchUpInsideButtonEvent(_ sender: Any) {
-        numberOfClicks += 1;
-        print("Value of the label is \(numberOfClicks)");
-        counterLabel.text = "Times clicked: \(numberOfClicks)";
+    @IBAction
+    func loginAction(_ sender: UIButton) {
     }
     
-    func initializeAnimation(sleepTime: Int) -> Void {
-        myActivityIndicator.startAnimating();
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(sleepTime), execute: {
-            if self.myActivityIndicator.isAnimating {
-                self.myActivityIndicator.stopAnimating();
-            }
-            self.mySwitch.setOn(false, animated: true);
-        })
+    @IBAction
+    func checkmarkAction(_ sender: UIButton) {
+        checkmarkButton.isSelected = !checkmarkButton.isSelected
     }
+    
     /*
     // MARK: - Navigation
 
@@ -70,4 +52,5 @@ class LoginViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+
 }
