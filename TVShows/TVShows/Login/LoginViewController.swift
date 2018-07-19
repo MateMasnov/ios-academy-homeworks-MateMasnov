@@ -11,23 +11,6 @@ import Alamofire
 import CodableAlamofire
 import SVProgressHUD
 
-//MARK: - Structures -
-struct User: Codable {
-    let email: String
-    let type: String
-    let id: String
-    
-    enum CodingKeys: String, CodingKey {
-        case email
-        case type
-        case id = "_id"
-    }
-}
-
-struct LoginData: Codable {
-    let token: String
-}
-
 class LoginViewController: UIViewController {
 
     //MARK: - Outlets -
@@ -38,10 +21,6 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     
     //MARK: - Private -
-    private let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
-    private let alert = UIAlertController(title: "User input error",
-                                          message: "Invalid email or password",
-                                          preferredStyle: UIAlertControllerStyle.alert)
     private var user: User?
     private var loginData: LoginData?
     
@@ -49,11 +28,15 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
         // Do any additional setup after loading the view.
     }
    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -67,8 +50,6 @@ class LoginViewController: UIViewController {
             !email.isEmpty,
             !password.isEmpty
         else {
-            handleError()
-            
             return nil
         }
         
@@ -77,16 +58,51 @@ class LoginViewController: UIViewController {
     }
     
     func handleError() {
-        self.present(alert, animated: true, completion: nil)
+        let alert = UIAlertController(title: "User input error",
+                                      message: "Invalid email or password",
+                                      preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        present(alert, animated: true, completion: nil)
         
         emailTextField.text = ""
         passwordTextField.text = ""
+    }
+    
+    func loginAPIcall(parameters: [String: String]) {
+        SVProgressHUD.show()
+        Alamofire
+            .request("https://api.infinum.academy/api/users/sessions",
+                     method: .post,
+                     parameters: parameters,
+                     encoding: JSONEncoding.default)
+            .validate()
+            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
+                (response: DataResponse<LoginData>) in
+                guard let `self` = self else {
+                    return
+                }
+                SVProgressHUD.dismiss()
+                switch response.result {
+                case .success(let data):
+                    self.loginData = LoginData(token: data.token)
+                    
+                    let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
+                    let homeViewController =
+                        homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
+                            as! HomeViewController
+                    self.navigationController?.setViewControllers([homeViewController], animated: true)
+                case .failure(let error):
+                    print("API failure: \(error)")
+                    self.handleError()
+                }
+        }
     }
     
     //MARK: - Actions -
     @IBAction
     func createAccountAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
+            handleError()
             return
         }
         
@@ -100,19 +116,15 @@ class LoginViewController: UIViewController {
             .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
                 (response: DataResponse<User>) in
                 
+                SVProgressHUD.dismiss()
                 switch response.result {
                 case .success(let userResult):
                     self?.user = User(email: userResult.email, type: userResult.type, id: userResult.id)
-                    SVProgressHUD.dismiss()
                     
-                    let homeViewController =
-                        self?.homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
-                        as! HomeViewController
-                    self?.navigationController?.setViewControllers([homeViewController], animated: true)
+                    self?.loginAPIcall(parameters: parameters)
                 case .failure(let error):
                     print("API failure: \(error)")
                     self?.handleError()
-                    SVProgressHUD.dismiss()
                 }
         }
     }
@@ -120,49 +132,15 @@ class LoginViewController: UIViewController {
     @IBAction
     func loginAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
+            handleError()
             return
         }
         
-        SVProgressHUD.show()
-        Alamofire
-            .request("https://api.infinum.academy/api/users/sessions",
-                     method: .post,
-                     parameters: parameters,
-                     encoding: JSONEncoding.default)
-            .validate()
-            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
-                (response: DataResponse<LoginData>) in
-                
-                switch response.result {
-                case .success(let data):
-                    self?.loginData = LoginData(token: data.token)
-                    SVProgressHUD.dismiss()
-                    
-                    let homeViewController =
-                        self?.homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
-                        as! HomeViewController
-                    self?.navigationController?.setViewControllers([homeViewController], animated: true)
-                case .failure(let error):
-                    print("API failure: \(error)")
-                    SVProgressHUD.dismiss()
-                    self?.handleError()
-                }
-        }
+        loginAPIcall(parameters: parameters)
     }
     
     @IBAction
     func checkmarkAction(_ sender: UIButton) {
         checkmarkButton.isSelected = !checkmarkButton.isSelected
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
