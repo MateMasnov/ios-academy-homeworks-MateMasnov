@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="84I-cz-6vX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="aGS-hw-tp1">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WUd-i9-z48">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vai-Pe-4uX">
                                         <rect key="frame" x="0.0" y="0.0" width="409" height="620"/>
@@ -31,14 +31,14 @@
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="NY7-XI-9Ye" userLabel="User Stack View">
                                                 <rect key="frame" x="40" y="260" width="295" height="170"/>
                                                 <subviews>
-                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AYG-iR-yBc">
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Email" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AYG-iR-yBc" userLabel="Email Text Field">
                                                         <rect key="frame" x="0.0" y="0.0" width="295" height="50"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="50" id="7C0-Hp-tjh"/>
                                                         </constraints>
                                                         <color key="textColor" red="1" green="0.45882352941176469" blue="0.5490196078431373" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
-                                                        <textInputTraits key="textInputTraits" textContentType="username"/>
+                                                        <textInputTraits key="textInputTraits" textContentType="email"/>
                                                     </textField>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="W0N-Cx-B5H">
                                                         <rect key="frame" x="0.0" y="60" width="295" height="50"/>
@@ -150,17 +150,36 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ima-ah-GBu"/>
                     </view>
+                    <navigationItem key="navigationItem" id="cHN-cp-5qk"/>
                     <connections>
                         <outlet property="checkmarkButton" destination="kvx-Ze-EP8" id="rIp-Of-cUV"/>
                         <outlet property="createAccountButton" destination="AUA-gJ-KgI" id="lFp-Zb-iDn"/>
+                        <outlet property="emailTextField" destination="AYG-iR-yBc" id="ylr-OI-GoV"/>
                         <outlet property="loginButton" destination="EIZ-P2-uKo" id="jwy-UC-qCL"/>
                         <outlet property="passwordTextField" destination="W0N-Cx-B5H" id="kvA-39-SHi"/>
-                        <outlet property="usernameTextField" destination="AYG-iR-yBc" id="aPs-uo-oWV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d3t-QB-Tgv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-236" y="-112.3152709359606"/>
+            <point key="canvasLocation" x="703.20000000000005" y="-112.89355322338831"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="bwR-lc-uY1">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="aGS-hw-tp1" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="4Cs-8v-pKJ">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="84I-cz-6vX" kind="relationship" relationship="rootViewController" id="iNz-nt-YeY"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="uRM-tq-3pL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-236" y="-112.89355322338831"/>
         </scene>
     </scenes>
     <resources>
