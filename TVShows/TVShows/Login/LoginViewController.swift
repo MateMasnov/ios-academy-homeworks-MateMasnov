@@ -78,9 +78,11 @@ class LoginViewController: UIViewController {
             .validate()
             .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
                 (response: DataResponse<LoginData>) in
+                
                 guard let `self` = self else {
                     return
                 }
+                
                 SVProgressHUD.dismiss()
                 switch response.result {
                 case .success(let data):
@@ -116,15 +118,19 @@ class LoginViewController: UIViewController {
             .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
                 (response: DataResponse<User>) in
                 
+                guard let `self` = self else {
+                    return
+                }
+                
                 SVProgressHUD.dismiss()
                 switch response.result {
                 case .success(let userResult):
-                    self?.user = User(email: userResult.email, type: userResult.type, id: userResult.id)
+                    self.user = User(email: userResult.email, type: userResult.type, id: userResult.id)
                     
-                    self?.loginAPIcall(parameters: parameters)
+                    self.loginAPIcall(parameters: parameters)
                 case .failure(let error):
                     print("API failure: \(error)")
-                    self?.handleError()
+                    self.handleError()
                 }
         }
     }
