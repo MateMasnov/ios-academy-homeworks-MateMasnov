@@ -118,7 +118,7 @@ class LoginViewController: UIViewController, Progressable {
         passwordTextField.text = ""
     }
     
-    func pushToHomeViewController(loginData: LoginData) {
+    func navigateToHomeViewController(loginData: LoginData) {
         let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController =
             homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
@@ -202,7 +202,7 @@ class LoginViewController: UIViewController, Progressable {
                 guard let `self` = self else { return }
                 
                 self.loginData = loginData
-                self.pushToHomeViewController(loginData: loginData)
+                self.navigateToHomeViewController(loginData: loginData)
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
