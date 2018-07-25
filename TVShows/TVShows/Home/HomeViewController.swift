@@ -96,9 +96,22 @@ class HomeViewController: UIViewController, Progressable {
         }
     }
 }
+
 //MARK: - Extensions -
 extension HomeViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
     
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteButton = UITableViewRowAction(style: .default, title: "Delete") { action, indexPath in
+            self.shows.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+        }
+        deleteButton.backgroundColor = UIColor(rgb: 0xFF758C)
+        
+        return [deleteButton]
+    }
 }
 
 extension HomeViewController: UITableViewDataSource {
@@ -119,5 +132,4 @@ extension HomeViewController: UITableViewDataSource {
         
         return cell
     }
-    
 }

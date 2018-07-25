@@ -20,6 +20,7 @@ class LoginViewController: UIViewController, Progressable {
     @IBOutlet weak var checkmarkButton: UIButton!
     @IBOutlet weak var createAccountButton: UIButton!
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     //MARK: - Private -
     private var user: User?
@@ -29,13 +30,70 @@ class LoginViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(LoginViewController.keyboardWillShow(_:)),
+                name: Notification.Name.UIKeyboardWillShow,
+                object: nil)
+        
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(LoginViewController.keyboardWillHide(_:)),
+                name: Notification.Name.UIKeyboardWillHide,
+                object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
+    //MARK: - Notification functions -
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func adjustKeyboard(_ isKeyboardShown: Bool, notification: Notification) {
+        let userInfo = notification.userInfo ?? [:]
+        let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        
+        let keyboardVisibleHeight: CGFloat = keyboardFrame.height
+        var height = keyboardVisibleHeight
+        
+        if #available(iOS 11.0, *), keyboardVisibleHeight > 0 {
+            height = height - self.view.safeAreaInsets.bottom
+        }
+        
+        let insetsShow = UIEdgeInsets(
+            top: 0,
+            left: 0,
+            bottom: height,
+            right: 0
+        )
+        let insetsHide = UIEdgeInsets(
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0
+        )
+        self.scrollView.contentInset = isKeyboardShown ? insetsShow : insetsHide
+        
+        self.view.setNeedsLayout()
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        adjustKeyboard(true, notification: notification)
+    }
+    @objc func keyboardWillHide(_ notification: Notification) {
+        adjustKeyboard(false, notification: notification)
     }
     
     //MARK: - Strategic functions -
