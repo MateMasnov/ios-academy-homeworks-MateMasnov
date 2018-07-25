@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		5C5AFFEE2100C35400436A89 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5AFFED2100C35400436A89 /* User.swift */; };
+		5C5E80AB2107A9B900F0A16A /* Show.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5E80AA2107A9B900F0A16A /* Show.swift */; };
+		5C5E80AD2107B10100F0A16A /* podProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5E80AC2107B10100F0A16A /* podProtocols.swift */; };
+		5C5E80B12108A03400F0A16A /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5E80B02108A03400F0A16A /* HomeTableViewCell.swift */; };
 		5C715FB020EE6F4400E36A61 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C715FAF20EE6F4400E36A61 /* AppDelegate.swift */; };
 		5C715FB720EE6F4600E36A61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C715FB620EE6F4600E36A61 /* Assets.xcassets */; };
 		5C715FBA20EE6F4600E36A61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C715FB820EE6F4600E36A61 /* LaunchScreen.storyboard */; };
@@ -20,6 +23,9 @@
 
 /* Begin PBXFileReference section */
 		5C5AFFED2100C35400436A89 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		5C5E80AA2107A9B900F0A16A /* Show.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Show.swift; sourceTree = "<group>"; };
+		5C5E80AC2107B10100F0A16A /* podProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = podProtocols.swift; sourceTree = "<group>"; };
+		5C5E80B02108A03400F0A16A /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
 		5C715FAC20EE6F4400E36A61 /* TVShows.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TVShows.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C715FAF20EE6F4400E36A61 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5C715FB620EE6F4600E36A61 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -50,6 +56,8 @@
 			isa = PBXGroup;
 			children = (
 				5C5AFFED2100C35400436A89 /* User.swift */,
+				5C5E80AA2107A9B900F0A16A /* Show.swift */,
+				5C5E80AC2107B10100F0A16A /* podProtocols.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -100,6 +108,7 @@
 			children = (
 				5CD7B8C420FF4E8300A7C49D /* Home.storyboard */,
 				5CD7B8C620FF504000A7C49D /* HomeViewController.swift */,
+				5C5E80B02108A03400F0A16A /* HomeTableViewCell.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -242,8 +251,11 @@
 			files = (
 				5C5AFFEE2100C35400436A89 /* User.swift in Sources */,
 				5CD4B8F620FD659E000309A5 /* LoginViewController.swift in Sources */,
+				5C5E80B12108A03400F0A16A /* HomeTableViewCell.swift in Sources */,
 				5C715FB020EE6F4400E36A61 /* AppDelegate.swift in Sources */,
+				5C5E80AB2107A9B900F0A16A /* Show.swift in Sources */,
 				5CD7B8C720FF504000A7C49D /* HomeViewController.swift in Sources */,
+				5C5E80AD2107B10100F0A16A /* podProtocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

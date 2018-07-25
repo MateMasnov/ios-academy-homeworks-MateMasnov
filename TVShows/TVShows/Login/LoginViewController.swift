@@ -11,7 +11,7 @@ import Alamofire
 import CodableAlamofire
 import SVProgressHUD
 
-class LoginViewController: UIViewController {
+class LoginViewController: UIViewController, Progressable {
 
     //MARK: - Outlets -
     @IBOutlet weak var emailTextField: UITextField!
@@ -69,7 +69,7 @@ class LoginViewController: UIViewController {
     }
     
     func loginAPIcall(parameters: [String: String]) {
-        SVProgressHUD.show()
+        showSpinner()
         Alamofire
             .request("https://api.infinum.academy/api/users/sessions",
                      method: .post,
@@ -83,15 +83,16 @@ class LoginViewController: UIViewController {
                     return
                 }
                 
-                SVProgressHUD.dismiss()
+                self.hideSpinner()
                 switch response.result {
-                case .success(let data):
-                    self.loginData = LoginData(token: data.token)
+                case .success(let responseData):
+                    self.loginData = responseData
                     
                     let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
                     let homeViewController =
                         homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
                             as! HomeViewController
+                    homeViewController.setLoginData(loginData: responseData)
                     self.navigationController?.setViewControllers([homeViewController], animated: true)
                 case .failure(let error):
                     print("API failure: \(error)")
@@ -108,7 +109,7 @@ class LoginViewController: UIViewController {
             return
         }
         
-        SVProgressHUD.show()
+        showSpinner()
         Alamofire
             .request("https://api.infinum.academy/api/users",
                      method: .post,
@@ -122,7 +123,7 @@ class LoginViewController: UIViewController {
                     return
                 }
                 
-                SVProgressHUD.dismiss()
+                self.hideSpinner()
                 switch response.result {
                 case .success(let userResult):
                     self.user = User(email: userResult.email, type: userResult.type, id: userResult.id)
