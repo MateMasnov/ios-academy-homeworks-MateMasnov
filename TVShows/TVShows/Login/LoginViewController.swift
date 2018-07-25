@@ -10,9 +10,10 @@ import UIKit
 import Alamofire
 import CodableAlamofire
 import SVProgressHUD
+import PromiseKit
 
 class LoginViewController: UIViewController, Progressable {
-
+    
     //MARK: - Outlets -
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -27,77 +28,131 @@ class LoginViewController: UIViewController, Progressable {
     //MARK: - Controller functions -
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
     }
-   
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    //MARK: - Functions -
+    //MARK: - Strategic functions -
     func getParameters() -> [String: String]? {
         guard
             let email = emailTextField.text,
             let password = passwordTextField.text,
             !email.isEmpty,
             !password.isEmpty
-        else {
-            return nil
+            else {
+                return nil
         }
         
         return ["email": email,
                 "password": password]
     }
     
-    func handleError() {
-        let alert = UIAlertController(title: "User input error",
-                                      message: "Invalid email or password",
-                                      preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-        present(alert, animated: true, completion: nil)
+    func handleError(title: String, message: String) {
+        presentAlert(title: title, message: message, controller: self)
         
         emailTextField.text = ""
         passwordTextField.text = ""
     }
     
-    func loginAPIcall(parameters: [String: String]) {
-        showSpinner()
-        Alamofire
-            .request("https://api.infinum.academy/api/users/sessions",
-                     method: .post,
-                     parameters: parameters,
-                     encoding: JSONEncoding.default)
-            .validate()
-            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
-                (response: DataResponse<LoginData>) in
-                
-                guard let `self` = self else {
-                    return
-                }
-                
-                self.hideSpinner()
-                switch response.result {
-                case .success(let responseData):
-                    self.loginData = responseData
+    func pushToHomeViewController(loginData: LoginData) {
+        let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
+        let homeViewController =
+            homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
+                as! HomeViewController
+        homeViewController.setLoginData(loginData: loginData)
+        
+        self.navigationController?.setViewControllers([homeViewController], animated: true)
+    }
+    
+    //MARK: - API call functions -
+    func loginAPICall(parameters: [String: String]) -> Promise<LoginData> {
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request("https://api.infinum.academy/api/users/sessions",
+                         method: .post,
+                         parameters: parameters,
+                         encoding: JSONEncoding.default)
+                .validate()
+                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
+                    (response: DataResponse<LoginData>) in
                     
-                    let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
-                    let homeViewController =
-                        homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
-                            as! HomeViewController
-                    homeViewController.setLoginData(loginData: responseData)
-                    self.navigationController?.setViewControllers([homeViewController], animated: true)
-                case .failure(let error):
-                    print("API failure: \(error)")
-                    self.handleError()
-                }
+                    switch response.result {
+                    case .success(let loginDataResult):
+                        seal.fulfill(loginDataResult)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    func registerAPICall(parameters: [String: String]) -> Promise<User> {
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request("https://api.infinum.academy/api/users",
+                         method: .post,
+                         parameters: parameters,
+                         encoding: JSONEncoding.default)
+                .validate()
+                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
+                    (response: DataResponse<User>) in
+                    
+                    switch response.result {
+                    case .success(let userResult):
+                        seal.fulfill(userResult)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    func register(parameters: [String: String]) {
+        showSpinner()
+        registerAPICall(parameters: parameters)
+            .done { [weak self] (user) in
+                guard let `self` = self else { return }
+                
+                self.user = user
+                self.login(parameters: parameters)
+            }
+            .catch { [weak self] (error) in
+                guard let `self` = self else { return }
+                
+                print("API failure: \(error)")
+                self.handleError(title: "API error", message: "Something went wrong")
+            }
+            .finally {
+                self.hideSpinner()
+        }
+    }
+    
+    func login(parameters: [String: String]) {
+        showSpinner()
+        loginAPICall(parameters: parameters)
+            .done { [weak self] (loginData) in
+                guard let `self` = self else { return }
+                
+                self.loginData = loginData
+                self.pushToHomeViewController(loginData: loginData)
+            }
+            .catch { [weak self] (error) in
+                guard let `self` = self else { return }
+                
+                print("API failure: \(error)")
+                self.handleError(title: "API error", message: "Something went wrong")
+            }.finally {
+                self.hideSpinner()
         }
     }
     
@@ -105,45 +160,21 @@ class LoginViewController: UIViewController, Progressable {
     @IBAction
     func createAccountAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            handleError()
+            self.handleError(title: "User input error", message: "Invalid username or password")
             return
         }
         
-        showSpinner()
-        Alamofire
-            .request("https://api.infinum.academy/api/users",
-                     method: .post,
-                     parameters: parameters,
-                     encoding: JSONEncoding.default)
-            .validate()
-            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
-                (response: DataResponse<User>) in
-                
-                guard let `self` = self else {
-                    return
-                }
-                
-                self.hideSpinner()
-                switch response.result {
-                case .success(let userResult):
-                    self.user = User(email: userResult.email, type: userResult.type, id: userResult.id)
-                    
-                    self.loginAPIcall(parameters: parameters)
-                case .failure(let error):
-                    print("API failure: \(error)")
-                    self.handleError()
-                }
-        }
+        register(parameters: parameters)
     }
     
     @IBAction
     func loginAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            handleError()
+            self.handleError(title: "User input error", message: "Invalid username or password")
             return
         }
         
-        loginAPIcall(parameters: parameters)
+        login(parameters: parameters)
     }
     
     @IBAction

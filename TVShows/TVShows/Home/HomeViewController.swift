@@ -9,14 +9,16 @@
 import UIKit
 import Alamofire
 import CodableAlamofire
+import PromiseKit
 
 class HomeViewController: UIViewController, Progressable {
 
+    //MARK: - Privates -
     private var loginData: LoginData!
     private var shows: [Show] = []
     
-    @IBOutlet
-    weak var tableView: UITableView! {
+    //MARK: - Outlets -
+    @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.dataSource = self
             tableView.delegate = self
@@ -24,11 +26,12 @@ class HomeViewController: UIViewController, Progressable {
         }
     }
     
+    //MARK: - Controller functions -
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = "TV Shows"
-        getShowsAPICall()
+        displayShows()
         // Do any additional setup after loading the view.
     }
     
@@ -37,45 +40,63 @@ class HomeViewController: UIViewController, Progressable {
         
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
+
+    func setLoginData(loginData: LoginData) {
+        self.loginData = loginData
+    }
     
-    func getShowsAPICall() {
+    //MARK: - API functions -
+    func displayShows() {
         guard let loginData = loginData else {
             return
         }
         
-        let headers = ["Authorization": loginData.token]
-        
         showSpinner()
-        Alamofire
-            .request("https://api.infinum.academy/api/shows",
-                     method: .get,
-                     encoding: JSONEncoding.default,
-                     headers: headers)
-            .validate()
-            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
-                (response: DataResponse<[Show]>) in
+        getShowsAPICall(token: loginData.token)
+            .done { [weak self] (responseArray) in
+                guard let `self` = self else { return }
                 
-                guard let `self` = self else {
-                    return
-                }
+                self.shows = responseArray
+                self.tableView.reloadData()
+                self.tableView.tableFooterView = UIView()
+            }
+            .catch { [weak self] (error) in
+                guard let `self` = self else { return }
                 
+                print("API failure: \(error)")
+                presentAlert(title: "API failure", message: "Something went wrong", controller: self)
+            }
+            .finally {
                 self.hideSpinner()
-                switch response.result {
-                case .success(let responseArray):
-                    self.shows = responseArray
-                    self.tableView.reloadData()
-                    self.tableView.tableFooterView = UIView()
-                case .failure(let error):
-                    print("API failure: \(error)")
-                }
         }
     }
     
-    func setLoginData(loginData: LoginData) {
-        self.loginData = loginData
+    func getShowsAPICall(token: String) -> Promise<[Show]> {
+        let headers = ["Authorization": token]
+        
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request("https://api.infinum.academy/api/shows",
+                         method: .get,
+                         encoding: JSONEncoding.default,
+                         headers: headers)
+                .validate()
+                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { //[weak self]
+                    (response: DataResponse<[Show]>) in
+                    
+                    switch response.result {
+                    case .success(let responseArray):
+                        seal.fulfill(responseArray)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
     }
 }
-
+//MARK: - Extensions -
 extension HomeViewController: UITableViewDelegate {
     
 }
