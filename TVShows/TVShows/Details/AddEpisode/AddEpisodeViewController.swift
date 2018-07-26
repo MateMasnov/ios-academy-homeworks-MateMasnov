@@ -12,7 +12,7 @@ import CodableAlamofire
 import Alamofire
 
 protocol AddEpisodeControllerDelegate: class {
-    func addedEpisode()
+    func addedEpisode(episode: Episode)
 }
 
 class AddEpisodeViewController: UIViewController, Progressable {
@@ -53,7 +53,11 @@ class AddEpisodeViewController: UIViewController, Progressable {
     
     //MARK: - Functions -
     @objc func didSelectAddShow() {
-        guard let parameters = getParameters() else { return }
+        guard let parameters = getParameters() else {
+            handleError(title: "Input error", message: "Invalid text input")
+            return
+        }
+        
         addEpisode(parameters: parameters)
     }
     
@@ -69,6 +73,7 @@ class AddEpisodeViewController: UIViewController, Progressable {
         self.showId = showId
     }
     
+    //MARK: - Strategic functions -
     private func handleError(title: String, message: String) {
         self.presentAlert(title: title, message: message)
         
@@ -84,7 +89,11 @@ class AddEpisodeViewController: UIViewController, Progressable {
             let title: String = episodeTitleField.text,
             let season: String = seasonNumberField.text,
             let episode: String = episodeNumberField.text,
-            let description: String = episodeDescriptionField.text
+            let description: String = episodeDescriptionField.text,
+            !title.isEmpty,
+            !season.isEmpty,
+            !episode.isEmpty,
+            !description.isEmpty
             else {
                 return nil
         }
@@ -98,6 +107,7 @@ class AddEpisodeViewController: UIViewController, Progressable {
                 ]
     }
     
+    //MARK: - API functions -
     private func addEpisodeAPICall(parameters: [String: String]) -> Promise<Episode> {
         let headers: [String: String] = ["Authorization": token]
         
@@ -130,7 +140,7 @@ class AddEpisodeViewController: UIViewController, Progressable {
             .done { [weak self] (result) in
                 guard let `self` = self else { return }
                 
-                self.delegate?.addedEpisode()
+                self.delegate?.addedEpisode(episode: result)
                 self.dismiss(animated: true, completion: nil)
             }
             .catch { [weak self] (error) in

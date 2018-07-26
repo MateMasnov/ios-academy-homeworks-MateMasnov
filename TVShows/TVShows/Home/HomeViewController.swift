@@ -30,9 +30,9 @@ class HomeViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.title = "TV Shows"
-        displayShows()
-        // Do any additional setup after loading the view.
+        tableView.tableFooterView = UIView()
+        title = "TV Shows"
+        loadShows()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -46,8 +46,7 @@ class HomeViewController: UIViewController, Progressable {
     }
     
     //MARK: - API functions -
-    func displayShows() {
-        
+    func loadShows() {
         showSpinner()
         getShowsAPICall(token: loginData.token)
             .done { [weak self] (responseArray) in
@@ -55,7 +54,6 @@ class HomeViewController: UIViewController, Progressable {
                 
                 self.shows = responseArray
                 self.tableView.reloadData()
-                self.tableView.tableFooterView = UIView()
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
@@ -63,8 +61,8 @@ class HomeViewController: UIViewController, Progressable {
                 print("API failure: \(error)")
                 self.presentAlert(title: "API failure", message: "Something went wrong")
             }
-            .finally {
-                self.hideSpinner()
+            .finally { [weak self] in
+                self?.hideSpinner()
         }
     }
     

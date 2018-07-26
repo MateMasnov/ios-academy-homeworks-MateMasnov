@@ -41,11 +41,6 @@ class ShowDetailsViewController: UIViewController, Progressable {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let addEpisodeViewController = segue.destination as! AddEpisodeViewController
-        addEpisodeViewController.delegate = self
-    }
-    
     func setShowId(showId: String) {
         self.showId = showId
     }
@@ -142,6 +137,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
                 as! AddEpisodeViewController
         let navigationController = UINavigationController.init(rootViewController: addEpisodeViewController)
         
+        addEpisodeViewController.delegate = self
         addEpisodeViewController.setToken(token: token)
         addEpisodeViewController.setShowId(showId: showId)
         
@@ -151,25 +147,16 @@ class ShowDetailsViewController: UIViewController, Progressable {
 
 //MARK: - Extensions -
 extension ShowDetailsViewController: AddEpisodeControllerDelegate {
-    func addedEpisode() {
+    func addedEpisode(episode: Episode) {
         showSpinner()
-        getAllEpisodesAPICall(token: token, showId: showId)
-            .done { [weak self] (episodes) in
-                guard let `self` = self else { return }
-                
-                self.episodesList = episodes
-                self.tableView.reloadData()
-            }.catch { [weak self] (error) in
-                guard let `self` = self else { return }
-                
-                self.presentAlert(title: "API error", message: "Something went wrong")
-            }.finally { [weak self] in
-                self?.hideSpinner()
-        }
+        
+        let newShow: Show = Show(id: episode.showId, title: episode.title, imageUrl: episode.imageUrl, likesCount: nil)
+        episodesList.append(newShow)
+        tableView.reloadData()
+        hideSpinner()
     }
 }
 
-//MARK: - Extensions -
 extension ShowDetailsViewController: UITableViewDelegate {
     
 }

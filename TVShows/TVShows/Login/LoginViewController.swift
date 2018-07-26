@@ -114,8 +114,8 @@ class LoginViewController: UIViewController, Progressable {
     private func handleError(title: String, message: String) {
         self.presentAlert(title: title, message: message)
         
-        emailTextField.text = ""
-        passwordTextField.text = ""
+        emailTextField.text = nil
+        passwordTextField.text = nil
     }
     
     private func navigateToHomeViewController(loginData: LoginData) {
@@ -190,8 +190,8 @@ class LoginViewController: UIViewController, Progressable {
                 print("API failure: \(error)")
                 self.handleError(title: "API error", message: "Something went wrong")
             }
-            .finally {
-                self.hideSpinner()
+            .finally { [weak self] in
+                self?.hideSpinner()
         }
     }
     
@@ -209,8 +209,8 @@ class LoginViewController: UIViewController, Progressable {
                 
                 print("API failure: \(error)")
                 self.handleError(title: "API error", message: "Something went wrong")
-            }.finally {
-                self.hideSpinner()
+            }.finally { [weak self] in
+                self?.hideSpinner()
         }
     }
     
