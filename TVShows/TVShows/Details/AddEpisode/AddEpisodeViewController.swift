@@ -1,0 +1,145 @@
+//
+//  AddEpisodeViewController.swift
+//  TVShows
+//
+//  Created by Infinum Student Academy on 26/07/2018.
+//  Copyright © 2018 Mate Masnov. All rights reserved.
+//
+
+import UIKit
+import PromiseKit
+import CodableAlamofire
+import Alamofire
+
+protocol AddEpisodeControllerDelegate: class {
+    func addedEpisode()
+}
+
+class AddEpisodeViewController: UIViewController, Progressable {
+    
+    //MARK: - Privates -
+    private var showId: String!
+    private var token: String!
+    weak var delegate: AddEpisodeControllerDelegate?
+
+    //MARK: - Outlets -
+    @IBOutlet weak var episodeTitleField: UITextField!
+    @IBOutlet weak var seasonNumberField: UITextField!
+    @IBOutlet weak var episodeNumberField: UITextField!
+    @IBOutlet weak var episodeDescriptionField: UITextField!
+    
+    //MARK: - Controller functions -
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.title = "Add episode"
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel",
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(didSelectCancelShow))
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add",
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(didSelectAddShow))
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
+    
+    //MARK: - Functions -
+    @objc func didSelectAddShow() {
+        guard let parameters = getParameters() else { return }
+        addEpisode(parameters: parameters)
+    }
+    
+    @objc func didSelectCancelShow() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func setToken(token: String) {
+        self.token = token
+    }
+    
+    func setShowId(showId: String) {
+        self.showId = showId
+    }
+    
+    private func handleError(title: String, message: String) {
+        self.presentAlert(title: title, message: message)
+        
+        episodeTitleField.text = nil
+        episodeDescriptionField.text = nil
+        episodeNumberField.text = nil
+        seasonNumberField.text = nil
+    }
+
+    
+    private func getParameters() -> [String: String]? {
+        guard
+            let title: String = episodeTitleField.text,
+            let season: String = seasonNumberField.text,
+            let episode: String = episodeNumberField.text,
+            let description: String = episodeDescriptionField.text
+            else {
+                return nil
+        }
+        
+        return [ "showId": showId,
+                 "mediaId": "",
+                 "title": title,
+                 "description": description,
+                 "episodeNumber": episode,
+                 "season": season
+                ]
+    }
+    
+    private func addEpisodeAPICall(parameters: [String: String]) -> Promise<Episode> {
+        let headers: [String: String] = ["Authorization": token]
+        
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request("https://api.infinum.academy/api/episodes",
+                         method: .post,
+                         parameters: parameters,
+                         encoding: JSONEncoding.default,
+                         headers: headers)
+                .validate()
+                .responseDecodableObject(keyPath: "data") { (response:
+                    DataResponse<Episode>) in
+    
+                    switch response.result {
+                    case .success(let episode):
+                        seal.fulfill(episode)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    private func addEpisode(parameters: [String: String]) {
+        showSpinner()
+        addEpisodeAPICall(parameters: parameters)
+            .done { [weak self] (result) in
+                guard let `self` = self else { return }
+                
+                self.delegate?.addedEpisode()
+                self.dismiss(animated: true, completion: nil)
+            }
+            .catch { [weak self] (error) in
+                guard let `self` = self else { return }
+
+                print("API failure: \(error)")
+                self.handleError(title: "API error", message: "Something went wrong")
+            }.finally { [weak self] in
+                self?.hideSpinner()
+        }
+    }
+}

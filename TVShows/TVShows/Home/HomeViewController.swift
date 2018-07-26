@@ -47,9 +47,6 @@ class HomeViewController: UIViewController, Progressable {
     
     //MARK: - API functions -
     func displayShows() {
-        guard let loginData = loginData else {
-            return
-        }
         
         showSpinner()
         getShowsAPICall(token: loginData.token)
@@ -64,7 +61,7 @@ class HomeViewController: UIViewController, Progressable {
                 guard let `self` = self else { return }
                 
                 print("API failure: \(error)")
-                presentAlert(title: "API failure", message: "Something went wrong", controller: self)
+                self.presentAlert(title: "API failure", message: "Something went wrong")
             }
             .finally {
                 self.hideSpinner()
@@ -83,7 +80,7 @@ class HomeViewController: UIViewController, Progressable {
                          encoding: JSONEncoding.default,
                          headers: headers)
                 .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { //[weak self]
+                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
                     (response: DataResponse<[Show]>) in
                     
                     switch response.result {
@@ -106,12 +103,25 @@ extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let deleteButton = UITableViewRowAction(style: .default, title: "Delete") { action, indexPath in
             self.shows.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.fade)
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
         deleteButton.backgroundColor = UIColor(rgb: 0xFF758C)
         
         return [deleteButton]
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let detailsStoryboard: UIStoryboard = UIStoryboard(name: "Details", bundle: nil)
+        let showDetailsViewController =
+            detailsStoryboard.instantiateViewController(withIdentifier: "ShowDetailsViewController")
+                as! ShowDetailsViewController
+ 
+        showDetailsViewController.setToken(token: loginData.token)
+        showDetailsViewController.setShowId(showId: shows[indexPath.row].id)
+        
+        navigationController?.show(showDetailsViewController, sender: self)
+    }
+    
 }
 
 extension HomeViewController: UITableViewDataSource {
@@ -126,10 +136,9 @@ extension HomeViewController: UITableViewDataSource {
             for: indexPath
             ) as! HomeTableViewCell
         
-        let item: HomeCellItem = HomeCellItem(title: shows[indexPath.row].title)
-        
-        cell.configure(with: item)
+        cell.configure(with: shows[indexPath.row])
         
         return cell
     }
 }
+

@@ -1,23 +1,25 @@
 //
-//  HomeTableViewCell.swift
+//  EpisodeTableViewCell.swift
 //  TVShows
 //
-//  Created by Infinum Student Academy on 25/07/2018.
+//  Created by Infinum Student Academy on 26/07/2018.
 //  Copyright © 2018 Mate Masnov. All rights reserved.
 //
 
 import UIKit
 
-struct HomeCellItem {
+struct EpisodeCellItem {
     let title: String
+    let details: String
 }
 
-class HomeTableViewCell: UITableViewCell {
+class EpisodeTableViewCell: UITableViewCell {
 
     //MARK: - Outlets -
+    @IBOutlet weak var detailsLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     
-    //MARK: - Cell functions -
+    //MARK: - Functions -
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -28,15 +30,16 @@ class HomeTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
         
+        detailsLabel.text = nil
         titleLabel.text = nil
     }
     
-    func configure(with item: ShowCellItemInterface) {
+    func configure(with item: EpisodeCellItem) {
         titleLabel.text = item.title
+        detailsLabel.text = item.details
     }
-
 }
