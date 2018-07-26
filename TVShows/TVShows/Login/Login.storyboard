@@ -157,6 +157,7 @@
                         <outlet property="emailTextField" destination="AYG-iR-yBc" id="ylr-OI-GoV"/>
                         <outlet property="loginButton" destination="EIZ-P2-uKo" id="jwy-UC-qCL"/>
                         <outlet property="passwordTextField" destination="W0N-Cx-B5H" id="kvA-39-SHi"/>
+                        <outlet property="scrollView" destination="WUd-i9-z48" id="1CU-0V-maR"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d3t-QB-Tgv" userLabel="First Responder" sceneMemberID="firstResponder"/>

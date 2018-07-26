@@ -10,15 +10,17 @@ import UIKit
 import Alamofire
 import CodableAlamofire
 import SVProgressHUD
+import PromiseKit
 
-class LoginViewController: UIViewController {
-
+class LoginViewController: UIViewController, Progressable {
+    
     //MARK: - Outlets -
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var checkmarkButton: UIButton!
     @IBOutlet weak var createAccountButton: UIButton!
     @IBOutlet weak var loginButton: UIButton!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     //MARK: - Private -
     private var user: User?
@@ -27,76 +29,188 @@ class LoginViewController: UIViewController {
     //MARK: - Controller functions -
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(LoginViewController.keyboardWillShow(_:)),
+                name: Notification.Name.UIKeyboardWillShow,
+                object: nil)
+        
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(LoginViewController.keyboardWillHide(_:)),
+                name: Notification.Name.UIKeyboardWillHide,
+                object: nil)
     }
-   
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    //MARK: - Notification functions -
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
-    //MARK: - Functions -
-    func getParameters() -> [String: String]? {
+    func adjustKeyboard(_ isKeyboardShown: Bool, notification: Notification) {
+        let userInfo = notification.userInfo ?? [:]
+        let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        
+        let keyboardVisibleHeight: CGFloat = keyboardFrame.height
+        var height = keyboardVisibleHeight
+        
+        if #available(iOS 11.0, *), keyboardVisibleHeight > 0 {
+            height = height - view.safeAreaInsets.bottom
+        }
+        
+        let insetsShow = UIEdgeInsets(
+            top: 0,
+            left: 0,
+            bottom: height,
+            right: 0
+        )
+        let insetsHide = UIEdgeInsets(
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0
+        )
+        scrollView.contentInset = isKeyboardShown ? insetsShow : insetsHide
+        
+        view.setNeedsLayout()
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        adjustKeyboard(true, notification: notification)
+    }
+    @objc func keyboardWillHide(_ notification: Notification) {
+        adjustKeyboard(false, notification: notification)
+    }
+    
+    //MARK: - Strategic functions -
+    private func getParameters() -> [String: String]? {
         guard
             let email = emailTextField.text,
             let password = passwordTextField.text,
             !email.isEmpty,
             !password.isEmpty
-        else {
-            return nil
+            else {
+                return nil
         }
         
         return ["email": email,
                 "password": password]
     }
     
-    func handleError() {
-        let alert = UIAlertController(title: "User input error",
-                                      message: "Invalid email or password",
-                                      preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-        present(alert, animated: true, completion: nil)
+    private func handleError(title: String, message: String) {
+        self.presentAlert(title: title, message: message)
         
-        emailTextField.text = ""
-        passwordTextField.text = ""
+        emailTextField.text = nil
+        passwordTextField.text = nil
     }
     
-    func loginAPIcall(parameters: [String: String]) {
-        SVProgressHUD.show()
-        Alamofire
-            .request("https://api.infinum.academy/api/users/sessions",
-                     method: .post,
-                     parameters: parameters,
-                     encoding: JSONEncoding.default)
-            .validate()
-            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
-                (response: DataResponse<LoginData>) in
-                
-                guard let `self` = self else {
-                    return
-                }
-                
-                SVProgressHUD.dismiss()
-                switch response.result {
-                case .success(let data):
-                    self.loginData = LoginData(token: data.token)
+    private func navigateToHomeViewController(loginData: LoginData) {
+        let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
+        let homeViewController =
+            homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
+                as! HomeViewController
+        homeViewController.setLoginData(loginData: loginData)
+        
+        navigationController?.setViewControllers([homeViewController], animated: true)
+    }
+    
+    //MARK: - API call functions -
+    private func loginAPICall(parameters: [String: String]) -> Promise<LoginData> {
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request("https://api.infinum.academy/api/users/sessions",
+                         method: .post,
+                         parameters: parameters,
+                         encoding: JSONEncoding.default)
+                .validate()
+                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
+                    (response: DataResponse<LoginData>) in
                     
-                    let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
-                    let homeViewController =
-                        homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
-                            as! HomeViewController
-                    self.navigationController?.setViewControllers([homeViewController], animated: true)
-                case .failure(let error):
-                    print("API failure: \(error)")
-                    self.handleError()
-                }
+                    switch response.result {
+                    case .success(let loginDataResult):
+                        seal.fulfill(loginDataResult)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    private func registerAPICall(parameters: [String: String]) -> Promise<User> {
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request("https://api.infinum.academy/api/users",
+                         method: .post,
+                         parameters: parameters,
+                         encoding: JSONEncoding.default)
+                .validate()
+                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
+                    (response: DataResponse<User>) in
+                    
+                    switch response.result {
+                    case .success(let userResult):
+                        seal.fulfill(userResult)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    private func register(parameters: [String: String]) {
+        showSpinner()
+        registerAPICall(parameters: parameters)
+            .done { [weak self] (user) in
+                guard let `self` = self else { return }
+                
+                self.user = user
+                self.login(parameters: parameters)
+            }
+            .catch { [weak self] (error) in
+                guard let `self` = self else { return }
+                
+                print("API failure: \(error)")
+                self.handleError(title: "API error", message: "Something went wrong")
+            }
+            .finally { [weak self] in
+                self?.hideSpinner()
+        }
+    }
+    
+    private func login(parameters: [String: String]) {
+        showSpinner()
+        loginAPICall(parameters: parameters)
+            .done { [weak self] (loginData) in
+                guard let `self` = self else { return }
+                
+                self.loginData = loginData
+                self.navigateToHomeViewController(loginData: loginData)
+            }
+            .catch { [weak self] (error) in
+                guard let `self` = self else { return }
+                
+                print("API failure: \(error)")
+                self.handleError(title: "API error", message: "Something went wrong")
+            }.finally { [weak self] in
+                self?.hideSpinner()
         }
     }
     
@@ -104,45 +218,21 @@ class LoginViewController: UIViewController {
     @IBAction
     func createAccountAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            handleError()
+            handleError(title: "User input error", message: "Invalid username or password")
             return
         }
         
-        SVProgressHUD.show()
-        Alamofire
-            .request("https://api.infinum.academy/api/users",
-                     method: .post,
-                     parameters: parameters,
-                     encoding: JSONEncoding.default)
-            .validate()
-            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { [weak self]
-                (response: DataResponse<User>) in
-                
-                guard let `self` = self else {
-                    return
-                }
-                
-                SVProgressHUD.dismiss()
-                switch response.result {
-                case .success(let userResult):
-                    self.user = User(email: userResult.email, type: userResult.type, id: userResult.id)
-                    
-                    self.loginAPIcall(parameters: parameters)
-                case .failure(let error):
-                    print("API failure: \(error)")
-                    self.handleError()
-                }
-        }
+        register(parameters: parameters)
     }
     
     @IBAction
     func loginAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            handleError()
+            handleError(title: "User input error", message: "Invalid username or password")
             return
         }
         
-        loginAPIcall(parameters: parameters)
+        login(parameters: parameters)
     }
     
     @IBAction
