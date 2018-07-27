@@ -1,23 +1,23 @@
 //
-//  HomeTableViewCell.swift
+//  ShowImageTableViewCell.swift
 //  TVShows
 //
-//  Created by Infinum Student Academy on 25/07/2018.
+//  Created by Infinum Student Academy on 26/07/2018.
 //  Copyright © 2018 Mate Masnov. All rights reserved.
 //
 
 import UIKit
 
-struct HomeCellItem {
-    let title: String
+struct ImageCellItem {
+    let url: String
 }
 
-class HomeTableViewCell: UITableViewCell {
+class ShowImageTableViewCell: UITableViewCell {
 
     //MARK: - Outlets -
-    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var showImageView: UIImageView!
     
-    //MARK: - Cell functions -
+    //MARK: - Functions -
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -28,15 +28,13 @@ class HomeTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
-        
-        titleLabel.text = nil
+        //nesto
     }
     
-    func configure(with item: ShowCellItemInterface) {
-        titleLabel.text = item.title
+    func configure(with item: ImageCellItem) {
+        //kingfisher pod moras
     }
-
 }

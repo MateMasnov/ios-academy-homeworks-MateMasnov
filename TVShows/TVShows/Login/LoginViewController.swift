@@ -66,7 +66,7 @@ class LoginViewController: UIViewController, Progressable {
         var height = keyboardVisibleHeight
         
         if #available(iOS 11.0, *), keyboardVisibleHeight > 0 {
-            height = height - self.view.safeAreaInsets.bottom
+            height = height - view.safeAreaInsets.bottom
         }
         
         let insetsShow = UIEdgeInsets(
@@ -81,9 +81,9 @@ class LoginViewController: UIViewController, Progressable {
             bottom: 0,
             right: 0
         )
-        self.scrollView.contentInset = isKeyboardShown ? insetsShow : insetsHide
+        scrollView.contentInset = isKeyboardShown ? insetsShow : insetsHide
         
-        self.view.setNeedsLayout()
+        view.setNeedsLayout()
         UIView.animate(withDuration: 0.25) {
             self.view.layoutIfNeeded()
         }
@@ -97,7 +97,7 @@ class LoginViewController: UIViewController, Progressable {
     }
     
     //MARK: - Strategic functions -
-    func getParameters() -> [String: String]? {
+    private func getParameters() -> [String: String]? {
         guard
             let email = emailTextField.text,
             let password = passwordTextField.text,
@@ -111,25 +111,25 @@ class LoginViewController: UIViewController, Progressable {
                 "password": password]
     }
     
-    func handleError(title: String, message: String) {
-        presentAlert(title: title, message: message, controller: self)
+    private func handleError(title: String, message: String) {
+        self.presentAlert(title: title, message: message)
         
-        emailTextField.text = ""
-        passwordTextField.text = ""
+        emailTextField.text = nil
+        passwordTextField.text = nil
     }
     
-    func navigateToHomeViewController(loginData: LoginData) {
+    private func navigateToHomeViewController(loginData: LoginData) {
         let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController =
             homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
                 as! HomeViewController
         homeViewController.setLoginData(loginData: loginData)
         
-        self.navigationController?.setViewControllers([homeViewController], animated: true)
+        navigationController?.setViewControllers([homeViewController], animated: true)
     }
     
     //MARK: - API call functions -
-    func loginAPICall(parameters: [String: String]) -> Promise<LoginData> {
+    private func loginAPICall(parameters: [String: String]) -> Promise<LoginData> {
         return Promise {
             seal in
             
@@ -152,7 +152,7 @@ class LoginViewController: UIViewController, Progressable {
         }
     }
     
-    func registerAPICall(parameters: [String: String]) -> Promise<User> {
+    private func registerAPICall(parameters: [String: String]) -> Promise<User> {
         return Promise {
             seal in
             
@@ -175,7 +175,7 @@ class LoginViewController: UIViewController, Progressable {
         }
     }
     
-    func register(parameters: [String: String]) {
+    private func register(parameters: [String: String]) {
         showSpinner()
         registerAPICall(parameters: parameters)
             .done { [weak self] (user) in
@@ -190,12 +190,12 @@ class LoginViewController: UIViewController, Progressable {
                 print("API failure: \(error)")
                 self.handleError(title: "API error", message: "Something went wrong")
             }
-            .finally {
-                self.hideSpinner()
+            .finally { [weak self] in
+                self?.hideSpinner()
         }
     }
     
-    func login(parameters: [String: String]) {
+    private func login(parameters: [String: String]) {
         showSpinner()
         loginAPICall(parameters: parameters)
             .done { [weak self] (loginData) in
@@ -209,8 +209,8 @@ class LoginViewController: UIViewController, Progressable {
                 
                 print("API failure: \(error)")
                 self.handleError(title: "API error", message: "Something went wrong")
-            }.finally {
-                self.hideSpinner()
+            }.finally { [weak self] in
+                self?.hideSpinner()
         }
     }
     
@@ -218,7 +218,7 @@ class LoginViewController: UIViewController, Progressable {
     @IBAction
     func createAccountAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            self.handleError(title: "User input error", message: "Invalid username or password")
+            handleError(title: "User input error", message: "Invalid username or password")
             return
         }
         
@@ -228,7 +228,7 @@ class LoginViewController: UIViewController, Progressable {
     @IBAction
     func loginAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            self.handleError(title: "User input error", message: "Invalid username or password")
+            handleError(title: "User input error", message: "Invalid username or password")
             return
         }
         

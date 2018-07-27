@@ -9,11 +9,12 @@
 import Foundation
 import UIKit
 
-func presentAlert(title: String, message: String, controller: UIViewController) {
-    let alert = UIAlertController(title: title,
-                                  message: message,
-                                  preferredStyle: UIAlertControllerStyle.alert)
-    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-    controller.present(alert, animated: true, completion: nil)
+extension UIViewController {
+    func presentAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title,
+                                      message: message,
+                                      preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
 }
-
