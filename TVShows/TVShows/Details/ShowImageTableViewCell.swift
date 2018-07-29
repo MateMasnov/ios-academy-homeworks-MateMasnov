@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 struct ImageCellItem {
     let url: String
@@ -31,10 +32,18 @@ class ShowImageTableViewCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
-        //nesto
+        
+        showImageView.image = nil
     }
     
     func configure(with item: ImageCellItem) {
-        //kingfisher pod moras
+        let url = URL(string: "https://api.infinum.academy" + item.url)
+        let placeholder: UIImage = UIImage(named: "login-logo")!
+        showImageView.contentMode = .center
+        
+        showImageView.kf.setImage(with: url, placeholder: placeholder) { image, _, _, _ in
+            if image == nil { return }
+            self.showImageView.contentMode = .scaleToFill
+        }
     }
 }
