@@ -30,6 +30,33 @@ class LoginViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        setupKeyboardNotifications()
+        
+        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
+    //MARK: - Notification functions -
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
+    }
+   
+    @objc func keyboardWillShow(_ notification: Notification) {
+        adjustKeyboard(true, notification: notification, scrollView: scrollView)
+    }
+    
+    @objc func keyboardWillHide(_ notification: Notification) {
+        adjustKeyboard(false, notification: notification, scrollView: scrollView)
+    }
+    
+    private func setupKeyboardNotifications() {
         NotificationCenter
             .default
             .addObserver(
@@ -45,55 +72,6 @@ class LoginViewController: UIViewController, Progressable {
                 selector: #selector(LoginViewController.keyboardWillHide(_:)),
                 name: Notification.Name.UIKeyboardWillHide,
                 object: nil)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        navigationController?.setNavigationBarHidden(true, animated: true)
-    }
-    
-    //MARK: - Notification functions -
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    func adjustKeyboard(_ isKeyboardShown: Bool, notification: Notification) {
-        let userInfo = notification.userInfo ?? [:]
-        let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
-        
-        let keyboardVisibleHeight: CGFloat = keyboardFrame.height
-        var height = keyboardVisibleHeight
-        
-        if #available(iOS 11.0, *), keyboardVisibleHeight > 0 {
-            height = height - view.safeAreaInsets.bottom
-        }
-        
-        let insetsShow = UIEdgeInsets(
-            top: 0,
-            left: 0,
-            bottom: height,
-            right: 0
-        )
-        let insetsHide = UIEdgeInsets(
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0
-        )
-        scrollView.contentInset = isKeyboardShown ? insetsShow : insetsHide
-        
-        view.setNeedsLayout()
-        UIView.animate(withDuration: 0.25) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    @objc func keyboardWillShow(_ notification: Notification) {
-        adjustKeyboard(true, notification: notification)
-    }
-    @objc func keyboardWillHide(_ notification: Notification) {
-        adjustKeyboard(false, notification: notification)
     }
     
     //MARK: - Strategic functions -
@@ -123,7 +101,9 @@ class LoginViewController: UIViewController, Progressable {
         let homeViewController =
             homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
                 as! HomeViewController
-        homeViewController.setLoginData(loginData: loginData)
+        
+        homeViewController.setToken(token: loginData.token)
+        homeViewController.title = "TV Shows"
         
         navigationController?.setViewControllers([homeViewController], animated: true)
     }

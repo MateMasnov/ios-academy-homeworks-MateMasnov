@@ -27,12 +27,12 @@ class AddEpisodeViewController: UIViewController, Progressable {
     @IBOutlet weak var seasonNumberField: UITextField!
     @IBOutlet weak var episodeNumberField: UITextField!
     @IBOutlet weak var episodeDescriptionField: UITextField!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     //MARK: - Controller functions -
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Add episode"
         navigationController?.navigationBar.barTintColor = .white
         navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel",
@@ -46,9 +46,44 @@ class AddEpisodeViewController: UIViewController, Progressable {
                                                             action: #selector(didSelectAddShow))
     }
     
+    //MARK: - Keyboard notifications -
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+    
+        setupKeyboardNotifications()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        adjustKeyboard(true, notification: notification, scrollView: scrollView)
+    }
+    
+    @objc func keyboardWillHide(_ notification: Notification) {
+        adjustKeyboard(false, notification: notification, scrollView: scrollView)
+    }
+    
+    private func setupKeyboardNotifications() {
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(AddEpisodeViewController.keyboardWillShow(_:)),
+                name: Notification.Name.UIKeyboardWillShow,
+                object: nil)
+        
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(AddEpisodeViewController.keyboardWillHide(_:)),
+                name: Notification.Name.UIKeyboardWillHide,
+                object: nil)
     }
     
     //MARK: - Functions -
@@ -65,11 +100,8 @@ class AddEpisodeViewController: UIViewController, Progressable {
         dismiss(animated: true, completion: nil)
     }
     
-    func setToken(token: String) {
+    func setup(token: String, showId: String) {
         self.token = token
-    }
-    
-    func setShowId(showId: String) {
         self.showId = showId
     }
     

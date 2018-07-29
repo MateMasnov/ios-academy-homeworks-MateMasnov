@@ -14,7 +14,7 @@ import PromiseKit
 class HomeViewController: UIViewController, Progressable {
 
     //MARK: - Privates -
-    private var loginData: LoginData!
+    private var token: String!
     private var shows: [Show] = []
     
     //MARK: - Outlets -
@@ -31,7 +31,6 @@ class HomeViewController: UIViewController, Progressable {
         super.viewDidLoad()
 
         tableView.tableFooterView = UIView()
-        title = "TV Shows"
         loadShows()
     }
     
@@ -41,14 +40,14 @@ class HomeViewController: UIViewController, Progressable {
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
 
-    func setLoginData(loginData: LoginData) {
-        self.loginData = loginData
+    func setToken(token: String) {
+        self.token = token
     }
     
     //MARK: - API functions -
     func loadShows() {
         showSpinner()
-        getShowsAPICall(token: loginData.token)
+        getShowsAPICall(token: token)
             .done { [weak self] (responseArray) in
                 guard let `self` = self else { return }
                 
@@ -99,8 +98,8 @@ extension HomeViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let deleteButton = UITableViewRowAction(style: .default, title: "Delete") { action, indexPath in
-            self.shows.remove(at: indexPath.row)
+        let deleteButton = UITableViewRowAction(style: .default, title: "Delete") { [weak self] action, indexPath in
+            self?.shows.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
         deleteButton.backgroundColor = UIColor(rgb: 0xFF758C)
@@ -114,8 +113,7 @@ extension HomeViewController: UITableViewDelegate {
             detailsStoryboard.instantiateViewController(withIdentifier: "ShowDetailsViewController")
                 as! ShowDetailsViewController
  
-        showDetailsViewController.setToken(token: loginData.token)
-        showDetailsViewController.setShowId(showId: shows[indexPath.row].id)
+        showDetailsViewController.setup(token: token, showId: shows[indexPath.row].id)
         
         navigationController?.show(showDetailsViewController, sender: self)
     }

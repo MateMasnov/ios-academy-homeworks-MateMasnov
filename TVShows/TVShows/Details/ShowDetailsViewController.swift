@@ -16,7 +16,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
     private var showId: String!
     private var token: String!
     private var showDetails: ShowDetails?
-    private var episodesList: [Show] = []
+    private var episodesList: [Episode] = []
     
     //MARK: - Outlets -
     @IBOutlet weak var tableView: UITableView! {
@@ -41,16 +41,13 @@ class ShowDetailsViewController: UIViewController, Progressable {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    func setShowId(showId: String) {
-        self.showId = showId
-    }
-    
-    func setToken(token: String) {
+    func setup(token: String, showId: String) {
         self.token = token
+        self.showId = showId
     }
 
     //MARK: - API functions -
-    private func getDetailsAPICall(token: String, showId: String) -> Promise<ShowDetails> {
+    private func getShowDetailsAPICall(token: String, showId: String) -> Promise<ShowDetails> {
         let headers = ["Authorization": token]
         
         return Promise {
@@ -75,7 +72,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
         }
     }
     
-    private func getAllEpisodesAPICall(token: String, showId: String) -> Promise<[Show]> {
+    private func getAllEpisodesAPICall(token: String, showId: String) -> Promise<[Episode]> {
         let headers = ["Authorization": token]
         
         return Promise {
@@ -88,7 +85,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
                     headers: headers)
                 .validate()
                 .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<[Show]>) in
+                    (response: DataResponse<[Episode]>) in
                     
                     switch response.result {
                     case .success(let episodes):
@@ -102,8 +99,8 @@ class ShowDetailsViewController: UIViewController, Progressable {
     
     private func loadDetails() {
         showSpinner()
-        getDetailsAPICall(token: token, showId: showId)
-            .then({ (showDetails) -> Promise<[Show]> in
+        getShowDetailsAPICall(token: token, showId: showId)
+            .then({ (showDetails) -> Promise<[Episode]> in
                 self.showDetails = showDetails
                 return self.getAllEpisodesAPICall(token: self.token, showId: self.showId)
             })
@@ -137,9 +134,9 @@ class ShowDetailsViewController: UIViewController, Progressable {
                 as! AddEpisodeViewController
         let navigationController = UINavigationController.init(rootViewController: addEpisodeViewController)
         
+        addEpisodeViewController.title = "Add episode"
         addEpisodeViewController.delegate = self
-        addEpisodeViewController.setToken(token: token)
-        addEpisodeViewController.setShowId(showId: showId)
+        addEpisodeViewController.setup(token: token, showId: showId)
         
         present(navigationController, animated: true, completion: nil)
     }
@@ -149,9 +146,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
 extension ShowDetailsViewController: AddEpisodeControllerDelegate {
     func addedEpisode(episode: Episode) {
         showSpinner()
-        
-        let newShow: Show = Show(id: episode.showId, title: episode.title, imageUrl: episode.imageUrl, likesCount: nil)
-        episodesList.append(newShow)
+        episodesList.append(episode)
         tableView.reloadData()
         hideSpinner()
     }
@@ -184,7 +179,9 @@ extension ShowDetailsViewController: UITableViewDataSource {
                 for: indexPath
                 ) as! ShowImageTableViewCell
             
-            let item: ImageCellItem = ImageCellItem(url: "")
+            guard let showDetails = showDetails else { return cell }
+            
+            let item: ImageCellItem = ImageCellItem(url: showDetails.imageUrl)
             
             cell.configure(with: item)
             
@@ -197,8 +194,7 @@ extension ShowDetailsViewController: UITableViewDataSource {
             
             guard let showDetails = showDetails else { return cell }
             
-            let description: String = showDetails.description == "" ? "No description" : showDetails.description
-            let item: DescriptionCellItem = DescriptionCellItem(title: showDetails.title, description: description, numberOfEpisodes: episodesList.count)
+            let item: DescriptionCellItem = DescriptionCellItem(title: showDetails.title, description: showDetails.description, numberOfEpisodes: episodesList.count)
             
             cell.configure(with: item)
             
@@ -209,8 +205,7 @@ extension ShowDetailsViewController: UITableViewDataSource {
                 for: indexPath
                 ) as! EpisodeTableViewCell
             
-            let title: String = episodesList[row - 2].title == "" ? "No title" : episodesList[row - 2].title
-            let item: EpisodeCellItem = EpisodeCellItem(title: title, details: "S2 E\(row - 1)")
+            let item: EpisodeCellItem = EpisodeCellItem(title: episodesList[row - 2].title, episodeNumber: episodesList[row - 2].episodeNumber, seasonNumber: episodesList[row - 2].season)
             
             cell.configure(with: item)
             

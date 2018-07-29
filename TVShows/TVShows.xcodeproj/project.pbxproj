@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C1DAB7F210DFABD00E6CA96 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1DAB7E210DFABD00E6CA96 /* Notifications.swift */; };
 		5C5AFFEE2100C35400436A89 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5AFFED2100C35400436A89 /* User.swift */; };
 		5C5E80AB2107A9B900F0A16A /* Show.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5E80AA2107A9B900F0A16A /* Show.swift */; };
 		5C5E80B12108A03400F0A16A /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5E80B02108A03400F0A16A /* HomeTableViewCell.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C1DAB7E210DFABD00E6CA96 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		5C5AFFED2100C35400436A89 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5C5E80AA2107A9B900F0A16A /* Show.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Show.swift; sourceTree = "<group>"; };
 		5C5E80B02108A03400F0A16A /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 			children = (
 				5CCEAA92210916A900507922 /* Protocols.swift */,
 				5C5E80B22108BB8100F0A16A /* Alert.swift */,
+				5C1DAB7E210DFABD00E6CA96 /* Notifications.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-TVShows/Pods-TVShows-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/CodableAlamofire/CodableAlamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 			);
@@ -280,6 +284,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CodableAlamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 			);
@@ -321,6 +326,7 @@
 				5CE6D8B12109CD5600C4105D /* ShowDetails.swift in Sources */,
 				5CE6D8B72109DA4300C4105D /* ShowImageTableViewCell.swift in Sources */,
 				5C5E80AB2107A9B900F0A16A /* Show.swift in Sources */,
+				5C1DAB7F210DFABD00E6CA96 /* Notifications.swift in Sources */,
 				5CD7B8C720FF504000A7C49D /* HomeViewController.swift in Sources */,
 				5CE6D8AC2109CAA600C4105D /* ShowDetailsViewController.swift in Sources */,
 				5CE6D8B52109D37400C4105D /* EpisodeTableViewCell.swift in Sources */,

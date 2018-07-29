@@ -10,7 +10,8 @@ import UIKit
 
 struct EpisodeCellItem {
     let title: String
-    let details: String
+    let episodeNumber: String
+    let seasonNumber: String
 }
 
 class EpisodeTableViewCell: UITableViewCell {
@@ -39,7 +40,11 @@ class EpisodeTableViewCell: UITableViewCell {
     }
     
     func configure(with item: EpisodeCellItem) {
-        titleLabel.text = item.title
-        detailsLabel.text = item.details
+        let title: String = item.title == "" ? "No title" : item.title
+        let season: String = item.seasonNumber == "" ? "?" : item.seasonNumber
+        let episode: String = item.episodeNumber == "" ? "?" : item.episodeNumber
+        
+        titleLabel.text = title
+        detailsLabel.text = "S\(season) E\(episode)"
     }
 }
