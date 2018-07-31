@@ -155,16 +155,16 @@ class LoginViewController: UIViewController, Progressable, ApiManager {
     }
     
     private func login(parameters: [String: String]) {
-        if checkmarkButton.isSelected {
-            let keychain = Keychain(service: "TVShows")
-            keychain["email"] = parameters["email"]
-            keychain["password"] = parameters["password"]
-        }
-        
         showSpinner()
         loginAPICall(parameters: parameters)
             .done { [weak self] (loginData) in
                 guard let `self` = self else { return }
+                
+                if self.checkmarkButton.isSelected {
+                    let keychain = Keychain(service: "TVShows")
+                    keychain["email"] = parameters["email"]
+                    keychain["password"] = parameters["password"]
+                }
                 
                 self.loginData = loginData
                 self.navigateToHomeViewController(loginData: loginData)
