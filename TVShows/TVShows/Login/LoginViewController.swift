@@ -11,6 +11,7 @@ import Alamofire
 import CodableAlamofire
 import SVProgressHUD
 import PromiseKit
+import KeychainAccess
 
 class LoginViewController: UIViewController, Progressable {
     
@@ -30,12 +31,26 @@ class LoginViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let keychain = Keychain(service: "TVShows")
+        guard
+            let email = keychain["email"],
+            let password = keychain["password"]
+            else {
+                return
+        }
+        
+        let parameters: [String: String] = [
+            "email": email,
+            "password": password
+        ]
+        
+        self.login(parameters: parameters)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        setupKeyboardNotifications()
+        registerKeyboardNotifications()
         
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
@@ -56,7 +71,7 @@ class LoginViewController: UIViewController, Progressable {
         adjustKeyboard(false, notification: notification, scrollView: scrollView)
     }
     
-    private func setupKeyboardNotifications() {
+    private func registerKeyboardNotifications() {
         NotificationCenter
             .default
             .addObserver(
@@ -89,11 +104,16 @@ class LoginViewController: UIViewController, Progressable {
                 "password": password]
     }
     
-    private func handleError(title: String, message: String) {
-        self.presentAlert(title: title, message: message)
+    private func handleError(title: String, message: String, textFields: [UITextField]?) {
+        guard let textFields = textFields else {
+            self.presentAlert(title: title, message: message)
+            
+            emailTextField.text = nil
+            passwordTextField.text = nil
+            return
+        }
         
-        emailTextField.text = nil
-        passwordTextField.text = nil
+        self.presentAlertWithTextFieldAnimations(title: title, message: message, textFields: textFields)
     }
     
     private func navigateToHomeViewController(loginData: LoginData) {
@@ -168,7 +188,9 @@ class LoginViewController: UIViewController, Progressable {
                 guard let `self` = self else { return }
                 
                 print("API failure: \(error)")
-                self.handleError(title: "API error", message: "Something went wrong")
+                self.handleError(title: "API error",
+                                 message: "Something went wrong",
+                                 textFields: [self.emailTextField, self.passwordTextField])
             }
             .finally { [weak self] in
                 self?.hideSpinner()
@@ -176,6 +198,12 @@ class LoginViewController: UIViewController, Progressable {
     }
     
     private func login(parameters: [String: String]) {
+        if checkmarkButton.isSelected {
+            let keychain = Keychain(service: "TVShows")
+            keychain["email"] = parameters["email"]
+            keychain["password"] = parameters["password"]
+        }
+        
         showSpinner()
         loginAPICall(parameters: parameters)
             .done { [weak self] (loginData) in
@@ -188,7 +216,9 @@ class LoginViewController: UIViewController, Progressable {
                 guard let `self` = self else { return }
                 
                 print("API failure: \(error)")
-                self.handleError(title: "API error", message: "Something went wrong")
+                self.handleError(title: "API error",
+                                 message: "Something went wrong",
+                                 textFields: [self.emailTextField, self.passwordTextField])
             }.finally { [weak self] in
                 self?.hideSpinner()
         }
@@ -198,7 +228,9 @@ class LoginViewController: UIViewController, Progressable {
     @IBAction
     func createAccountAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            handleError(title: "User input error", message: "Invalid username or password")
+            handleError(title: "User input error",
+                        message: "Invalid username or password",
+                        textFields: [emailTextField, passwordTextField])
             return
         }
         
@@ -208,7 +240,9 @@ class LoginViewController: UIViewController, Progressable {
     @IBAction
     func loginAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            handleError(title: "User input error", message: "Invalid username or password")
+            handleError(title: "User input error",
+                        message: "Invalid username or password",
+                        textFields: [emailTextField, passwordTextField])
             return
         }
         

@@ -33,24 +33,16 @@ class AddEpisodeViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.barTintColor = .white
-        navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel",
-                                                           style: .plain,
-                                                           target: self,
-                                                           action: #selector(didSelectCancelShow))
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add",
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(didSelectAddShow))
+        setNavigationItems()
     }
     
     //MARK: - Keyboard notifications -
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     
-        setupKeyboardNotifications()
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
+        registerKeyboardNotifications()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -68,7 +60,19 @@ class AddEpisodeViewController: UIViewController, Progressable {
         adjustKeyboard(false, notification: notification, scrollView: scrollView)
     }
     
-    private func setupKeyboardNotifications() {
+    private func setNavigationItems() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel",
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(didSelectCancelShow))
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add",
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(didSelectAddShow))
+    }
+    
+    private func registerKeyboardNotifications() {
         NotificationCenter
             .default
             .addObserver(
@@ -87,16 +91,25 @@ class AddEpisodeViewController: UIViewController, Progressable {
     }
     
     //MARK: - Functions -
-    @objc func didSelectAddShow() {
+    @objc private func didSelectAddShow() {
         guard let parameters = getParameters() else {
-            handleError(title: "Input error", message: "Invalid text input")
+            let textFields: [UITextField] = [
+                episodeTitleField,
+                episodeDescriptionField,
+                episodeNumberField,
+                seasonNumberField
+            ]
+        
+            handleError(title: "Input error",
+                        message: "Invalid text input",
+                        textFields: textFields)
             return
         }
         
         addEpisode(parameters: parameters)
     }
     
-    @objc func didSelectCancelShow() {
+    @objc private func didSelectCancelShow() {
         dismiss(animated: true, completion: nil)
     }
     
@@ -106,15 +119,19 @@ class AddEpisodeViewController: UIViewController, Progressable {
     }
     
     //MARK: - Strategic functions -
-    private func handleError(title: String, message: String) {
-        self.presentAlert(title: title, message: message)
+    private func handleError(title: String, message: String, textFields: [UITextField]?) {
+        guard let textFields = textFields else {
+            self.presentAlert(title: title, message: message)
+            
+            episodeTitleField.text = nil
+            episodeDescriptionField.text = nil
+            episodeNumberField.text = nil
+            seasonNumberField.text = nil
+            return
+        }
         
-        episodeTitleField.text = nil
-        episodeDescriptionField.text = nil
-        episodeNumberField.text = nil
-        seasonNumberField.text = nil
+        self.presentAlertWithTextFieldAnimations(title: title, message: message, textFields: textFields)
     }
-
     
     private func getParameters() -> [String: String]? {
         guard
@@ -178,8 +195,17 @@ class AddEpisodeViewController: UIViewController, Progressable {
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
 
+                let textFields: [UITextField] = [
+                    self.episodeTitleField,
+                    self.episodeDescriptionField,
+                    self.episodeNumberField,
+                    self.seasonNumberField
+                ]
+                
                 print("API failure: \(error)")
-                self.handleError(title: "API error", message: "Something went wrong")
+                self.handleError(title: "API error",
+                                 message: "Something went wrong",
+                                 textFields: textFields)
             }.finally { [weak self] in
                 self?.hideSpinner()
         }

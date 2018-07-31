@@ -24,6 +24,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
             tableView.dataSource = self
             tableView.delegate = self
             tableView.estimatedRowHeight = 100
+            tableView.separatorStyle = .none
         }
     }
     
@@ -132,7 +133,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
         let addEpisodeViewController =
             addEpisodeStoryboard.instantiateViewController(withIdentifier: "AddEpisodeViewController")
                 as! AddEpisodeViewController
-        let navigationController = UINavigationController.init(rootViewController: addEpisodeViewController)
+        let navigationController = UINavigationController(rootViewController: addEpisodeViewController)
         
         addEpisodeViewController.title = "Add episode"
         addEpisodeViewController.delegate = self

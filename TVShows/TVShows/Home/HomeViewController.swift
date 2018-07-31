@@ -10,19 +10,22 @@ import UIKit
 import Alamofire
 import CodableAlamofire
 import PromiseKit
+import KeychainAccess
 
-class HomeViewController: UIViewController, Progressable {
+class HomeViewController: UIViewController, Progressable, UICollectionViewDelegateFlowLayout {
 
     //MARK: - Privates -
     private var token: String!
     private var shows: [Show] = []
+    private var isListView: Bool = true
+    private var toggleButton: UIBarButtonItem?
     
     //MARK: - Outlets -
-    @IBOutlet weak var tableView: UITableView! {
+    @IBOutlet weak var collectionView: UICollectionView! {
         didSet {
-            tableView.dataSource = self
-            tableView.delegate = self
-            tableView.estimatedRowHeight = 50
+            collectionView.delegate = self
+            collectionView.dataSource = self
+            collectionView.reloadData()
         }
     }
     
@@ -30,13 +33,15 @@ class HomeViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.tableFooterView = UIView()
+        setNavigationItems()
         loadShows()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        navigationController?.navigationBar.barTintColor = .white
+        navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
 
@@ -44,15 +49,56 @@ class HomeViewController: UIViewController, Progressable {
         self.token = token
     }
     
+    private func setNavigationItems() {
+        let logoutItem = UIBarButtonItem.init(image: UIImage(named: "ic-logout"),
+                                              style: .plain,
+                                              target: self,
+                                              action: #selector(_logoutActionHandler))
+        navigationItem.leftBarButtonItem = logoutItem
+        
+        toggleButton = UIBarButtonItem.init(image: UIImage(named: "ic-gridview"),
+                                            style: .plain,
+                                            target: self,
+                                            action: #selector(butonTapped(sender:)))
+        navigationItem.rightBarButtonItem = toggleButton
+    }
+    
+    @objc private func butonTapped(sender: UIBarButtonItem) {
+        guard let toggleButton = toggleButton else { return }
+        
+        if isListView {
+            toggleButton.image = UIImage(named: "ic-listview")
+            isListView = false
+        } else {
+            toggleButton.image = UIImage(named: "ic-gridview")
+            isListView = true
+        }
+        
+        collectionView.reloadData()
+        self.navigationItem.setRightBarButton(toggleButton, animated: true)
+    }
+    
+    @objc private func _logoutActionHandler() {
+        let keychain = Keychain(service: "TVShows")
+        keychain["email"] = nil
+        keychain["password"] = nil
+        
+        let loginStoryboard: UIStoryboard = UIStoryboard(name: "Login", bundle: nil)
+        let loginViewController =
+            loginStoryboard.instantiateViewController(withIdentifier: "LoginViewController")
+                as! LoginViewController
+        navigationController?.setViewControllers([loginViewController], animated: true)
+    }
+    
     //MARK: - API functions -
-    func loadShows() {
+    private func loadShows() {
         showSpinner()
         getShowsAPICall(token: token)
             .done { [weak self] (responseArray) in
                 guard let `self` = self else { return }
                 
                 self.shows = responseArray
-                self.tableView.reloadData()
+                self.collectionView.reloadData()
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
@@ -65,7 +111,7 @@ class HomeViewController: UIViewController, Progressable {
         }
     }
     
-    func getShowsAPICall(token: String) -> Promise<[Show]> {
+    private func getShowsAPICall(token: String) -> Promise<[Show]> {
         let headers = ["Authorization": token]
         
         return Promise {
@@ -92,6 +138,68 @@ class HomeViewController: UIViewController, Progressable {
 }
 
 //MARK: - Extensions -
+extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let detailsStoryboard: UIStoryboard = UIStoryboard(name: "Details", bundle: nil)
+        let showDetailsViewController =
+            detailsStoryboard.instantiateViewController(withIdentifier: "ShowDetailsViewController")
+                as! ShowDetailsViewController
+        
+        showDetailsViewController.setup(token: token, showId: shows[indexPath.row].id)
+        
+        navigationController?.show(showDetailsViewController, sender: self)
+    }
+    
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = view.frame.width
+        
+        if isListView {
+            return CGSize(width: width, height: 120)
+        } else {
+            return CGSize(width: (width - 15)/2, height: (width - 15)/2)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 5
+    }
+    
+}
+
+extension HomeViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return shows.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if isListView {
+            let cell: HomeListCollectionViewCell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "HomeListCollectionViewCell",
+                for: indexPath
+                ) as! HomeListCollectionViewCell
+            
+            cell.configure(with: shows[indexPath.row])
+            
+            return cell
+        } else {
+            let cell: HomeGridCollectionViewCell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "HomeGridCollectionViewCell",
+                for: indexPath
+                ) as! HomeGridCollectionViewCell
+            
+            cell.configure(with: shows[indexPath.row])
+            
+            return cell
+        }
+    }
+}
+
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
