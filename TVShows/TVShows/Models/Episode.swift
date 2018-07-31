@@ -30,3 +30,15 @@ struct Episode: Codable {
         case episodeNumber
     }
 }
+
+protocol EpisodeCellItemInterface {
+    var title: String { get }
+    var season: String { get }
+    var episode: String { get }
+}
+
+extension Episode: EpisodeCellItemInterface {
+    var episode: String {
+        return episodeNumber
+    }
+}

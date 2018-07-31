@@ -10,7 +10,7 @@ import UIKit
 import PromiseKit
 import CodableAlamofire
 
-class ShowDetailsViewController: UIViewController, Progressable {
+class ShowDetailsViewController: UIViewController, Progressable, ApiManager {
 
     //MARK: - Privates -
     private var showId: String!
@@ -48,56 +48,6 @@ class ShowDetailsViewController: UIViewController, Progressable {
     }
 
     //MARK: - API functions -
-    private func getShowDetailsAPICall(token: String, showId: String) -> Promise<ShowDetails> {
-        let headers = ["Authorization": token]
-        
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/shows/\(showId)",
-                         method: .get,
-                         encoding: JSONEncoding.default,
-                         headers: headers)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<ShowDetails>) in
-                    
-                    switch response.result {
-                    case .success(let detailsResponse):
-                        seal.fulfill(detailsResponse)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-    
-    private func getAllEpisodesAPICall(token: String, showId: String) -> Promise<[Episode]> {
-        let headers = ["Authorization": token]
-        
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/shows/\(showId)/episodes",
-                    method: .get,
-                    encoding: JSONEncoding.default,
-                    headers: headers)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<[Episode]>) in
-                    
-                    switch response.result {
-                    case .success(let episodes):
-                        seal.fulfill(episodes)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-    
     private func loadDetails() {
         showSpinner()
         getShowDetailsAPICall(token: token, showId: showId)
@@ -205,10 +155,8 @@ extension ShowDetailsViewController: UITableViewDataSource {
                 withIdentifier: "EpisodeTableViewCell",
                 for: indexPath
                 ) as! EpisodeTableViewCell
-            
-            let item: EpisodeCellItem = EpisodeCellItem(title: episodesList[row - 2].title, episodeNumber: episodesList[row - 2].episodeNumber, seasonNumber: episodesList[row - 2].season)
-            
-            cell.configure(with: item)
+                 
+            cell.configure(with: episodesList[row - 2])
             
             return cell
         }

@@ -15,7 +15,7 @@ protocol AddEpisodeControllerDelegate: class {
     func addedEpisode(episode: Episode)
 }
 
-class AddEpisodeViewController: UIViewController, Progressable {
+class AddEpisodeViewController: UIViewController, Progressable, ApiManager {
     
     //MARK: - Privates -
     private var showId: String!
@@ -157,35 +157,11 @@ class AddEpisodeViewController: UIViewController, Progressable {
     }
     
     //MARK: - API functions -
-    private func addEpisodeAPICall(parameters: [String: String]) -> Promise<Episode> {
+    private func addEpisode(parameters: [String: String]) {
         let headers: [String: String] = ["Authorization": token]
         
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/episodes",
-                         method: .post,
-                         parameters: parameters,
-                         encoding: JSONEncoding.default,
-                         headers: headers)
-                .validate()
-                .responseDecodableObject(keyPath: "data") { (response:
-                    DataResponse<Episode>) in
-    
-                    switch response.result {
-                    case .success(let episode):
-                        seal.fulfill(episode)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-    
-    private func addEpisode(parameters: [String: String]) {
         showSpinner()
-        addEpisodeAPICall(parameters: parameters)
+        addEpisodeAPICall(parameters: parameters, headers: headers)
             .done { [weak self] (result) in
                 guard let `self` = self else { return }
                 

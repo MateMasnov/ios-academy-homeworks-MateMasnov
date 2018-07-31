@@ -13,7 +13,7 @@ import SVProgressHUD
 import PromiseKit
 import KeychainAccess
 
-class LoginViewController: UIViewController, Progressable {
+class LoginViewController: UIViewController, Progressable, ApiManager {
     
     //MARK: - Outlets -
     @IBOutlet weak var emailTextField: UITextField!
@@ -31,20 +31,7 @@ class LoginViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let keychain = Keychain(service: "TVShows")
-        guard
-            let email = keychain["email"],
-            let password = keychain["password"]
-            else {
-                return
-        }
-        
-        let parameters: [String: String] = [
-            "email": email,
-            "password": password
-        ]
-        
-        self.login(parameters: parameters)
+        checkKeychainLogin()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -63,12 +50,29 @@ class LoginViewController: UIViewController, Progressable {
         NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
     }
    
-    @objc func keyboardWillShow(_ notification: Notification) {
+    @objc private func keyboardWillShow(_ notification: Notification) {
         adjustKeyboard(true, notification: notification, scrollView: scrollView)
     }
     
-    @objc func keyboardWillHide(_ notification: Notification) {
+    @objc private func keyboardWillHide(_ notification: Notification) {
         adjustKeyboard(false, notification: notification, scrollView: scrollView)
+    }
+    
+    private func checkKeychainLogin() {
+        let keychain = Keychain(service: "TVShows")
+        guard
+            let email = keychain["email"],
+            let password = keychain["password"]
+            else {
+                return
+        }
+        
+        let parameters: [String: String] = [
+            "email": email,
+            "password": password
+        ]
+        
+        login(parameters: parameters)
     }
     
     private func registerKeyboardNotifications() {
@@ -126,53 +130,6 @@ class LoginViewController: UIViewController, Progressable {
         homeViewController.title = "TV Shows"
         
         navigationController?.setViewControllers([homeViewController], animated: true)
-    }
-    
-    //MARK: - API call functions -
-    private func loginAPICall(parameters: [String: String]) -> Promise<LoginData> {
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/users/sessions",
-                         method: .post,
-                         parameters: parameters,
-                         encoding: JSONEncoding.default)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<LoginData>) in
-                    
-                    switch response.result {
-                    case .success(let loginDataResult):
-                        seal.fulfill(loginDataResult)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-    
-    private func registerAPICall(parameters: [String: String]) -> Promise<User> {
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/users",
-                         method: .post,
-                         parameters: parameters,
-                         encoding: JSONEncoding.default)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<User>) in
-                    
-                    switch response.result {
-                    case .success(let userResult):
-                        seal.fulfill(userResult)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
     }
     
     private func register(parameters: [String: String]) {

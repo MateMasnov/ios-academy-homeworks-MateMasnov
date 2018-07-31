@@ -8,12 +8,6 @@
 
 import UIKit
 
-struct EpisodeCellItem {
-    let title: String
-    let episodeNumber: String
-    let seasonNumber: String
-}
-
 class EpisodeTableViewCell: UITableViewCell {
 
     //MARK: - Outlets -
@@ -39,10 +33,10 @@ class EpisodeTableViewCell: UITableViewCell {
         titleLabel.text = nil
     }
     
-    func configure(with item: EpisodeCellItem) {
+    func configure(with item: EpisodeCellItemInterface) {
         let title: String = item.title == "" ? "No title" : item.title
-        let season: String = item.seasonNumber == "" ? "?" : item.seasonNumber
-        let episode: String = item.episodeNumber == "" ? "?" : item.episodeNumber
+        let season: String = item.season == "" ? "?" : item.season
+        let episode: String = item.episode == "" ? "?" : item.episode
         
         titleLabel.text = title
         detailsLabel.text = "S\(season) E\(episode)"

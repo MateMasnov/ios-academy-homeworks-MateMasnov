@@ -12,7 +12,7 @@ class HomeGridCollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var showImageView: UIImageView!
     
-    func configure(with item: Show) {
+    func configure(with item: ShowCellItemInterface) {
         let url = URL(string: "https://api.infinum.academy" + item.imageUrl)
         let placeholder: UIImage = UIImage(named: "login-logo")!
         

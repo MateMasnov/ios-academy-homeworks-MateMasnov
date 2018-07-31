@@ -13,7 +13,7 @@ class HomeListCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var listImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     
-    func configure(with item: Show) {
+    func configure(with item: ShowCellItemInterface) {
         let url = URL(string: "https://api.infinum.academy" + item.imageUrl)
         let placeholder: UIImage = UIImage(named: "photo-logo")!
         

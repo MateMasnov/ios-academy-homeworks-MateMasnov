@@ -12,7 +12,7 @@ import CodableAlamofire
 import PromiseKit
 import KeychainAccess
 
-class HomeViewController: UIViewController, Progressable, UICollectionViewDelegateFlowLayout {
+class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, Progressable, ApiManager {
 
     //MARK: - Privates -
     private var token: String!
@@ -110,31 +110,6 @@ class HomeViewController: UIViewController, Progressable, UICollectionViewDelega
                 self?.hideSpinner()
         }
     }
-    
-    private func getShowsAPICall(token: String) -> Promise<[Show]> {
-        let headers = ["Authorization": token]
-        
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/shows",
-                         method: .get,
-                         encoding: JSONEncoding.default,
-                         headers: headers)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<[Show]>) in
-                    
-                    switch response.result {
-                    case .success(let responseArray):
-                        seal.fulfill(responseArray)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
 }
 
 //MARK: - Extensions -
@@ -197,52 +172,6 @@ extension HomeViewController: UICollectionViewDataSource {
             
             return cell
         }
-    }
-}
-
-extension HomeViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let deleteButton = UITableViewRowAction(style: .default, title: "Delete") { [weak self] action, indexPath in
-            self?.shows.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        }
-        deleteButton.backgroundColor = UIColor(rgb: 0xFF758C)
-        
-        return [deleteButton]
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailsStoryboard: UIStoryboard = UIStoryboard(name: "Details", bundle: nil)
-        let showDetailsViewController =
-            detailsStoryboard.instantiateViewController(withIdentifier: "ShowDetailsViewController")
-                as! ShowDetailsViewController
- 
-        showDetailsViewController.setup(token: token, showId: shows[indexPath.row].id)
-        
-        navigationController?.show(showDetailsViewController, sender: self)
-    }
-    
-}
-
-extension HomeViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return shows.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell: HomeTableViewCell = tableView.dequeueReusableCell(
-            withIdentifier: "HomeTableViewCell",
-            for: indexPath
-            ) as! HomeTableViewCell
-        
-        cell.configure(with: shows[indexPath.row])
-        
-        return cell
     }
 }
 
