@@ -14,15 +14,15 @@ class HomeListCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     
     func configure(with item: ShowCellItemInterface) {
-        let url = URL(string: "https://api.infinum.academy" + item.imageUrl)
+        let url = URL(string: Constants.URL.baseDomainUrl + item.imageUrl)
         let placeholder: UIImage = UIImage(named: "photo-logo")!
         
         listImageView.contentMode = .center
         titleLabel.text = item.title
         
-        listImageView.kf.setImage(with: url, placeholder: placeholder) { image, _, _, _ in
+        listImageView.kf.setImage(with: url, placeholder: placeholder) { [weak self] image, _, _, _ in
             if image == nil { return }
-            self.listImageView.contentMode = .scaleToFill
+            self?.listImageView.contentMode = .scaleAspectFit
         }
     }
 }

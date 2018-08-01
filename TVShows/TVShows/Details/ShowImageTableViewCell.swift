@@ -19,17 +19,6 @@ class ShowImageTableViewCell: UITableViewCell {
     @IBOutlet weak var showImageView: UIImageView!
     
     //MARK: - Functions -
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -41,9 +30,9 @@ class ShowImageTableViewCell: UITableViewCell {
         let placeholder: UIImage = UIImage(named: "login-logo")!
         showImageView.contentMode = .center
         
-        showImageView.kf.setImage(with: url, placeholder: placeholder) { image, _, _, _ in
+        showImageView.kf.setImage(with: url, placeholder: placeholder) { [weak self] image, _, _, _ in
             if image == nil { return }
-            self.showImageView.contentMode = .scaleToFill
+            self?.showImageView.contentMode = .scaleToFill
         }
     }
 }

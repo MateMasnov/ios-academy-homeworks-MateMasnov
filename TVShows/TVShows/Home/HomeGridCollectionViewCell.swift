@@ -13,14 +13,14 @@ class HomeGridCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var showImageView: UIImageView!
     
     func configure(with item: ShowCellItemInterface) {
-        let url = URL(string: "https://api.infinum.academy" + item.imageUrl)
+        let url = URL(string: Constants.URL.baseDomainUrl + item.imageUrl)
         let placeholder: UIImage = UIImage(named: "login-logo")!
         
         showImageView.contentMode = .center
         
-        showImageView.kf.setImage(with: url, placeholder: placeholder) { image, _, _, _ in
+        showImageView.kf.setImage(with: url, placeholder: placeholder) { [weak self] image, _, _, _ in
             if image == nil { return }
-            self.showImageView.contentMode = .scaleToFill
+            self?.showImageView.contentMode = .scaleAspectFit
         }
     }
 }

@@ -22,7 +22,7 @@
                                 <rect key="frame" x="0.0" y="64" width="414" height="628"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Cp-Ez-fLa">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="628"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="550"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IiP-R2-uSP">
                                                 <rect key="frame" x="149.66666666666666" y="90" width="114.99999999999997" height="40"/>
@@ -88,9 +88,9 @@
                                             <constraint firstItem="Brs-jF-lU5" firstAttribute="leading" secondItem="1Cp-Ez-fLa" secondAttribute="leading" constant="40" id="NJW-Zc-jzt"/>
                                             <constraint firstItem="IiP-R2-uSP" firstAttribute="top" secondItem="dQc-Kl-WFA" secondAttribute="bottom" constant="10" id="Ovs-Ku-iMr"/>
                                             <constraint firstItem="dQc-Kl-WFA" firstAttribute="top" secondItem="1Cp-Ez-fLa" secondAttribute="top" constant="50" id="Q8O-Xd-OHC"/>
+                                            <constraint firstAttribute="bottom" secondItem="Brs-jF-lU5" secondAttribute="bottom" constant="20" id="Qrd-dk-zlM"/>
                                             <constraint firstItem="IiP-R2-uSP" firstAttribute="centerX" secondItem="1Cp-Ez-fLa" secondAttribute="centerX" id="UGU-8o-ZUR"/>
                                             <constraint firstItem="Brs-jF-lU5" firstAttribute="top" secondItem="IiP-R2-uSP" secondAttribute="bottom" constant="100" id="b2y-hA-rhf"/>
-                                            <constraint firstItem="Brs-jF-lU5" firstAttribute="top" secondItem="IiP-R2-uSP" secondAttribute="bottom" constant="100" id="gPh-WK-rxq"/>
                                             <constraint firstItem="dQc-Kl-WFA" firstAttribute="centerX" secondItem="1Cp-Ez-fLa" secondAttribute="centerX" id="hwv-Rn-uEA"/>
                                             <constraint firstAttribute="trailing" secondItem="Brs-jF-lU5" secondAttribute="trailing" constant="40" id="wBt-uG-cgQ"/>
                                         </constraints>
@@ -98,12 +98,11 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="dQc-Kl-WFA" firstAttribute="width" secondItem="b1a-T2-Wkd" secondAttribute="width" id="2qR-3f-rqH"/>
-                                    <constraint firstItem="1Cp-Ez-fLa" firstAttribute="centerY" secondItem="b1a-T2-Wkd" secondAttribute="centerY" id="9Ut-kr-mPH"/>
                                     <constraint firstItem="1Cp-Ez-fLa" firstAttribute="leading" secondItem="b1a-T2-Wkd" secondAttribute="leading" id="Lls-9g-dyB"/>
                                     <constraint firstAttribute="trailing" secondItem="1Cp-Ez-fLa" secondAttribute="trailing" id="VcO-VO-K0h"/>
+                                    <constraint firstItem="1Cp-Ez-fLa" firstAttribute="width" secondItem="b1a-T2-Wkd" secondAttribute="width" id="WfJ-eV-0ra"/>
                                     <constraint firstItem="1Cp-Ez-fLa" firstAttribute="top" secondItem="b1a-T2-Wkd" secondAttribute="top" id="qFf-U4-PyT"/>
                                     <constraint firstAttribute="bottom" secondItem="1Cp-Ez-fLa" secondAttribute="bottom" id="vRV-5j-7vG"/>
-                                    <constraint firstItem="1Cp-Ez-fLa" firstAttribute="centerX" secondItem="b1a-T2-Wkd" secondAttribute="centerX" id="x3Q-Nv-iyk"/>
                                 </constraints>
                             </scrollView>
                         </subviews>

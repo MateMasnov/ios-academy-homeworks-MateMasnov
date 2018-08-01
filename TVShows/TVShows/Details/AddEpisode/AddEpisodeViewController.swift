@@ -8,14 +8,12 @@
 
 import UIKit
 import PromiseKit
-import CodableAlamofire
-import Alamofire
 
 protocol AddEpisodeControllerDelegate: class {
     func addedEpisode(episode: Episode)
 }
 
-class AddEpisodeViewController: UIViewController, Progressable, ApiManager {
+class AddEpisodeViewController: UIViewController, Progressable {
     
     //MARK: - Privates -
     private var showId: String!
@@ -34,9 +32,12 @@ class AddEpisodeViewController: UIViewController, Progressable, ApiManager {
         super.viewDidLoad()
         
         setNavigationItems()
+        episodeTitleField.delegate = self
+        seasonNumberField.delegate = self
+        episodeDescriptionField.delegate = self
+        episodeNumberField.delegate = self
     }
     
-    //MARK: - Keyboard notifications -
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     
@@ -48,16 +49,8 @@ class AddEpisodeViewController: UIViewController, Progressable, ApiManager {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
-    }
-    
-    @objc func keyboardWillShow(_ notification: Notification) {
-        adjustKeyboard(true, notification: notification, scrollView: scrollView)
-    }
-    
-    @objc func keyboardWillHide(_ notification: Notification) {
-        adjustKeyboard(false, notification: notification, scrollView: scrollView)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
     }
     
     private func setNavigationItems() {
@@ -72,25 +65,39 @@ class AddEpisodeViewController: UIViewController, Progressable, ApiManager {
                                                             action: #selector(didSelectAddShow))
     }
     
+    func setup(token: String, showId: String) {
+        self.token = token
+        self.showId = showId
+    }
+    
+    //MARK: - Keyboard notifications -
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        adjustKeyboard(true, notification: notification, scrollView: scrollView)
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        adjustKeyboard(false, notification: notification, scrollView: scrollView)
+    }
+    
     private func registerKeyboardNotifications() {
         NotificationCenter
             .default
             .addObserver(
                 self,
-                selector: #selector(AddEpisodeViewController.keyboardWillShow(_:)),
-                name: Notification.Name.UIKeyboardWillShow,
+                selector: #selector(keyboardWillShow(_:)),
+                name: .UIKeyboardWillShow,
                 object: nil)
         
         NotificationCenter
             .default
             .addObserver(
                 self,
-                selector: #selector(AddEpisodeViewController.keyboardWillHide(_:)),
-                name: Notification.Name.UIKeyboardWillHide,
+                selector: #selector(keyboardWillHide(_:)),
+                name: .UIKeyboardWillHide,
                 object: nil)
     }
     
-    //MARK: - Functions -
+    //MARK: - Bar button actions -
     @objc private func didSelectAddShow() {
         guard let parameters = getParameters() else {
             let textFields: [UITextField] = [
@@ -113,15 +120,10 @@ class AddEpisodeViewController: UIViewController, Progressable, ApiManager {
         dismiss(animated: true, completion: nil)
     }
     
-    func setup(token: String, showId: String) {
-        self.token = token
-        self.showId = showId
-    }
-    
     //MARK: - Strategic functions -
     private func handleError(title: String, message: String, textFields: [UITextField]?) {
         guard let textFields = textFields else {
-            self.presentAlert(title: title, message: message)
+            presentAlert(title: title, message: message)
             
             episodeTitleField.text = nil
             episodeDescriptionField.text = nil
@@ -161,7 +163,7 @@ class AddEpisodeViewController: UIViewController, Progressable, ApiManager {
         let headers: [String: String] = ["Authorization": token]
         
         showSpinner()
-        addEpisodeAPICall(parameters: parameters, headers: headers)
+        ApiManager.addEpisodeAPICall(parameters: parameters, headers: headers)
             .done { [weak self] (result) in
                 guard let `self` = self else { return }
                 
@@ -185,5 +187,27 @@ class AddEpisodeViewController: UIViewController, Progressable, ApiManager {
             }.finally { [weak self] in
                 self?.hideSpinner()
         }
+    }
+}
+
+//MARK: - Extensions -
+extension AddEpisodeViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == episodeTitleField {
+            seasonNumberField.becomeFirstResponder()
+        }
+        if textField == seasonNumberField {
+            episodeNumberField.becomeFirstResponder()
+        }
+        if textField == episodeNumberField {
+            episodeDescriptionField.becomeFirstResponder()
+        }
+        if textField == episodeDescriptionField {
+            textField.resignFirstResponder()
+            didSelectAddShow()
+        }
+        
+        return true
     }
 }

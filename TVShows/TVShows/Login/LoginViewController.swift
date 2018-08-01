@@ -7,13 +7,10 @@
 //
 
 import UIKit
-import Alamofire
-import CodableAlamofire
-import SVProgressHUD
 import PromiseKit
 import KeychainAccess
 
-class LoginViewController: UIViewController, Progressable, ApiManager {
+class LoginViewController: UIViewController, Progressable {
     
     //MARK: - Outlets -
     @IBOutlet weak var emailTextField: UITextField!
@@ -42,24 +39,8 @@ class LoginViewController: UIViewController, Progressable, ApiManager {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    //MARK: - Notification functions -
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Notification.Name.UIKeyboardWillHide, object: nil)
-    }
-   
-    @objc private func keyboardWillShow(_ notification: Notification) {
-        adjustKeyboard(true, notification: notification, scrollView: scrollView)
-    }
-    
-    @objc private func keyboardWillHide(_ notification: Notification) {
-        adjustKeyboard(false, notification: notification, scrollView: scrollView)
-    }
-    
     private func checkKeychainLogin() {
-        let keychain = Keychain(service: "TVShows")
+        let keychain: Keychain = Constants.KeychainEnum.keychain
         guard
             let email = keychain["email"],
             let password = keychain["password"]
@@ -75,21 +56,37 @@ class LoginViewController: UIViewController, Progressable, ApiManager {
         login(parameters: parameters)
     }
     
+    //MARK: - Notification functions -
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+    }
+   
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        adjustKeyboard(true, notification: notification, scrollView: scrollView)
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        adjustKeyboard(false, notification: notification, scrollView: scrollView)
+    }
+    
     private func registerKeyboardNotifications() {
         NotificationCenter
             .default
             .addObserver(
                 self,
-                selector: #selector(LoginViewController.keyboardWillShow(_:)),
-                name: Notification.Name.UIKeyboardWillShow,
+                selector: #selector(keyboardWillShow(_:)),
+                name: .UIKeyboardWillShow,
                 object: nil)
         
         NotificationCenter
             .default
             .addObserver(
                 self,
-                selector: #selector(LoginViewController.keyboardWillHide(_:)),
-                name: Notification.Name.UIKeyboardWillHide,
+                selector: #selector(keyboardWillHide(_:)),
+                name: .UIKeyboardWillHide,
                 object: nil)
     }
     
@@ -117,7 +114,9 @@ class LoginViewController: UIViewController, Progressable, ApiManager {
             return
         }
         
-        self.presentAlertWithTextFieldAnimations(title: title, message: message, textFields: textFields)
+        self.presentAlertWithTextFieldAnimations(title: title,
+                                                 message: message,
+                                                 textFields: textFields)
     }
     
     private func navigateToHomeViewController(loginData: LoginData) {
@@ -132,9 +131,10 @@ class LoginViewController: UIViewController, Progressable, ApiManager {
         navigationController?.setViewControllers([homeViewController], animated: true)
     }
     
+    //MARK: - Api functions -
     private func register(parameters: [String: String]) {
         showSpinner()
-        registerAPICall(parameters: parameters)
+        ApiManager.registerAPICall(parameters: parameters)
             .done { [weak self] (user) in
                 guard let `self` = self else { return }
                 
@@ -156,12 +156,12 @@ class LoginViewController: UIViewController, Progressable, ApiManager {
     
     private func login(parameters: [String: String]) {
         showSpinner()
-        loginAPICall(parameters: parameters)
+        ApiManager.loginAPICall(parameters: parameters)
             .done { [weak self] (loginData) in
                 guard let `self` = self else { return }
                 
                 if self.checkmarkButton.isSelected {
-                    let keychain = Keychain(service: "TVShows")
+                    let keychain: Keychain = Constants.KeychainEnum.keychain
                     keychain["email"] = parameters["email"]
                     keychain["password"] = parameters["password"]
                 }
@@ -183,7 +183,7 @@ class LoginViewController: UIViewController, Progressable, ApiManager {
     
     //MARK: - Actions -
     @IBAction
-    func createAccountAction(_ sender: UIButton) {
+    private func createAccountAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
             handleError(title: "User input error",
                         message: "Invalid username or password",
@@ -195,7 +195,7 @@ class LoginViewController: UIViewController, Progressable, ApiManager {
     }
     
     @IBAction
-    func loginAction(_ sender: UIButton) {
+    private func loginAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
             handleError(title: "User input error",
                         message: "Invalid username or password",
@@ -207,7 +207,7 @@ class LoginViewController: UIViewController, Progressable, ApiManager {
     }
     
     @IBAction
-    func checkmarkAction(_ sender: UIButton) {
+    private func checkmarkAction(_ sender: UIButton) {
         checkmarkButton.isSelected = !checkmarkButton.isSelected
     }
 }

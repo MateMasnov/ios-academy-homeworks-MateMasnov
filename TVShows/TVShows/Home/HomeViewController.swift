@@ -7,18 +7,20 @@
 //
 
 import UIKit
-import Alamofire
-import CodableAlamofire
 import PromiseKit
 import KeychainAccess
 
-class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, Progressable, ApiManager {
+class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, Progressable {
 
     //MARK: - Privates -
     private var token: String!
-    private var shows: [Show] = []
     private var isListView: Bool = true
     private var toggleButton: UIBarButtonItem?
+    private var shows: [Show] = [] {
+        didSet  {
+            collectionView.reloadData()
+        }
+    }
     
     //MARK: - Outlets -
     @IBOutlet weak var collectionView: UICollectionView! {
@@ -63,23 +65,23 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
         navigationItem.rightBarButtonItem = toggleButton
     }
     
+    //MARK: - Button actions -
     @objc private func butonTapped(sender: UIBarButtonItem) {
         guard let toggleButton = toggleButton else { return }
         
         if isListView {
             toggleButton.image = UIImage(named: "ic-listview")
-            isListView = false
         } else {
             toggleButton.image = UIImage(named: "ic-gridview")
-            isListView = true
         }
+        isListView = !isListView
         
         collectionView.reloadData()
         self.navigationItem.setRightBarButton(toggleButton, animated: true)
     }
     
     @objc private func _logoutActionHandler() {
-        let keychain = Keychain(service: "TVShows")
+        let keychain = Constants.KeychainEnum.keychain
         keychain["email"] = nil
         keychain["password"] = nil
         
@@ -93,12 +95,11 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
     //MARK: - API functions -
     private func loadShows() {
         showSpinner()
-        getShowsAPICall(token: token)
+        ApiManager.getShowsAPICall(token: token)
             .done { [weak self] (responseArray) in
                 guard let `self` = self else { return }
                 
                 self.shows = responseArray
-                self.collectionView.reloadData()
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
@@ -150,6 +151,7 @@ extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return shows.count
     }
+
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         

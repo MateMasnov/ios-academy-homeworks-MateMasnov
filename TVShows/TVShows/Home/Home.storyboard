@@ -35,7 +35,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="200"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7Yq-iR-Mn4" userLabel="Show Image View">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7Yq-iR-Mn4" userLabel="Show Image View">
                                                     <rect key="frame" x="20" y="10" width="110" height="180"/>
                                                 </imageView>
                                             </subviews>
@@ -58,7 +58,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="215" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hsL-th-S6E">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hsL-th-S6E">
                                                     <rect key="frame" x="20" y="5" width="80" height="90"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="80" id="2F4-ov-xff"/>

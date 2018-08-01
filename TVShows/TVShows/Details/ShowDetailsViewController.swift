@@ -8,15 +8,18 @@
 
 import UIKit
 import PromiseKit
-import CodableAlamofire
 
-class ShowDetailsViewController: UIViewController, Progressable, ApiManager {
+class ShowDetailsViewController: UIViewController, Progressable {
 
     //MARK: - Privates -
     private var showId: String!
     private var token: String!
     private var showDetails: ShowDetails?
-    private var episodesList: [Episode] = []
+    private var episodesList: [Episode] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     //MARK: - Outlets -
     @IBOutlet weak var tableView: UITableView! {
@@ -25,6 +28,7 @@ class ShowDetailsViewController: UIViewController, Progressable, ApiManager {
             tableView.delegate = self
             tableView.estimatedRowHeight = 100
             tableView.separatorStyle = .none
+            tableView.contentInset.bottom = 80
         }
     }
     
@@ -50,16 +54,15 @@ class ShowDetailsViewController: UIViewController, Progressable, ApiManager {
     //MARK: - API functions -
     private func loadDetails() {
         showSpinner()
-        getShowDetailsAPICall(token: token, showId: showId)
+        ApiManager.getShowDetailsAPICall(token: token, showId: showId)
             .then({ (showDetails) -> Promise<[Episode]> in
                 self.showDetails = showDetails
-                return self.getAllEpisodesAPICall(token: self.token, showId: self.showId)
+                return ApiManager.getAllEpisodesAPICall(token: self.token, showId: self.showId)
             })
             .done { [weak self] (episodes) in
                 guard let `self` = self else { return }
                 
                 self.episodesList = episodes
-                self.tableView.reloadData()
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
@@ -73,12 +76,12 @@ class ShowDetailsViewController: UIViewController, Progressable, ApiManager {
     
     //MARK: - Actions -
     @IBAction
-    func backButtonAction(_ sender: Any) {
+    private func backButtonAction(_ sender: Any) {
         navigationController?.popViewController(animated: true)
     }
     
     @IBAction
-    func addEpisodeAction(_ sender: Any) {
+    private func addEpisodeAction(_ sender: Any) {
         let addEpisodeStoryboard: UIStoryboard = UIStoryboard(name: "AddEpisode", bundle: nil)
         let addEpisodeViewController =
             addEpisodeStoryboard.instantiateViewController(withIdentifier: "AddEpisodeViewController")
@@ -98,7 +101,6 @@ extension ShowDetailsViewController: AddEpisodeControllerDelegate {
     func addedEpisode(episode: Episode) {
         showSpinner()
         episodesList.append(episode)
-        tableView.reloadData()
         hideSpinner()
     }
 }
@@ -145,7 +147,10 @@ extension ShowDetailsViewController: UITableViewDataSource {
             
             guard let showDetails = showDetails else { return cell }
             
-            let item: DescriptionCellItem = DescriptionCellItem(title: showDetails.title, description: showDetails.description, numberOfEpisodes: episodesList.count)
+            let item: DescriptionCellItem = DescriptionCellItem(
+                title: showDetails.title,
+                description: showDetails.description,
+                numberOfEpisodes: episodesList.count)
             
             cell.configure(with: item)
             

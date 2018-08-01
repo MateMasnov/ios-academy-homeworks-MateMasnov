@@ -11,16 +11,14 @@ import CodableAlamofire
 import Alamofire
 import PromiseKit
 
-protocol ApiManager {
-}
-
-extension ApiManager where Self: LoginViewController {
-    func loginAPICall(parameters: [String: String]) -> Promise<LoginData> {
+class ApiManager {
+    //MARK: - Login calls -
+    static func loginAPICall(parameters: [String: String]) -> Promise<LoginData> {
         return Promise {
             seal in
             
             Alamofire
-                .request("https://api.infinum.academy/api/users/sessions",
+                .request(Constants.URL.usersUrl + "/sessions",
                          method: .post,
                          parameters: parameters,
                          encoding: JSONEncoding.default)
@@ -38,12 +36,12 @@ extension ApiManager where Self: LoginViewController {
         }
     }
     
-    func registerAPICall(parameters: [String: String]) -> Promise<User> {
+    static func registerAPICall(parameters: [String: String]) -> Promise<User> {
         return Promise {
             seal in
             
             Alamofire
-                .request("https://api.infinum.academy/api/users",
+                .request(Constants.URL.usersUrl,
                          method: .post,
                          parameters: parameters,
                          encoding: JSONEncoding.default)
@@ -60,17 +58,16 @@ extension ApiManager where Self: LoginViewController {
             }
         }
     }
-}
 
-extension ApiManager where Self: HomeViewController {
-    func getShowsAPICall(token: String) -> Promise<[Show]> {
+    //MARK: - Home calls -
+    static func getShowsAPICall(token: String) -> Promise<[Show]> {
         let headers = ["Authorization": token]
         
         return Promise {
             seal in
             
             Alamofire
-                .request("https://api.infinum.academy/api/shows",
+                .request(Constants.URL.showsUrl,
                          method: .get,
                          encoding: JSONEncoding.default,
                          headers: headers)
@@ -87,17 +84,16 @@ extension ApiManager where Self: HomeViewController {
             }
         }
     }
-}
 
-extension ApiManager where Self: ShowDetailsViewController {
-    func getShowDetailsAPICall(token: String, showId: String) -> Promise<ShowDetails> {
+    //MARK: - Show Details calls -
+    static func getShowDetailsAPICall(token: String, showId: String) -> Promise<ShowDetails> {
         let headers = ["Authorization": token]
         
         return Promise {
             seal in
             
             Alamofire
-                .request("https://api.infinum.academy/api/shows/\(showId)",
+                .request(Constants.URL.showsUrl + "/\(showId)",
                     method: .get,
                     encoding: JSONEncoding.default,
                     headers: headers)
@@ -115,14 +111,14 @@ extension ApiManager where Self: ShowDetailsViewController {
         }
     }
     
-    func getAllEpisodesAPICall(token: String, showId: String) -> Promise<[Episode]> {
+    static func getAllEpisodesAPICall(token: String, showId: String) -> Promise<[Episode]> {
         let headers = ["Authorization": token]
         
         return Promise {
             seal in
             
             Alamofire
-                .request("https://api.infinum.academy/api/shows/\(showId)/episodes",
+                .request(Constants.URL.showsUrl + "/\(showId)/episodes",
                     method: .get,
                     encoding: JSONEncoding.default,
                     headers: headers)
@@ -139,16 +135,15 @@ extension ApiManager where Self: ShowDetailsViewController {
             }
         }
     }
-}
 
-extension ApiManager where Self: AddEpisodeViewController {
-    func addEpisodeAPICall(parameters: [String: String], headers: [String: String]) -> Promise<Episode> {
+    //MARK: - Episode calls -
+    static func addEpisodeAPICall(parameters: [String: String], headers: [String: String]) -> Promise<Episode> {
         
         return Promise {
             seal in
             
             Alamofire
-                .request("https://api.infinum.academy/api/episodes",
+                .request(Constants.URL.episodesUrl,
                          method: .post,
                          parameters: parameters,
                          encoding: JSONEncoding.default,

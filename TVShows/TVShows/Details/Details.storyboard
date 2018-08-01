@@ -21,7 +21,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="MRe-WY-Ppg">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="649"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ShowImageTableViewCell" rowHeight="400" id="p8i-Nm-jVS" customClass="ShowImageTableViewCell" customModule="TVShows" customModuleProvider="target">
@@ -57,10 +57,10 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="21" translatesAutoresizingMaskIntoConstraints="NO" id="3uK-Yn-v1V">
-                                                    <rect key="frame" x="35" y="21" width="250" height="178"/>
+                                                    <rect key="frame" x="35" y="21" width="305" height="178"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KPY-iR-cks">
-                                                            <rect key="frame" x="0.0" y="0.0" width="250" height="25"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="305" height="25"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="25" id="RuJ-0m-NL5"/>
                                                             </constraints>
@@ -69,13 +69,13 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Description" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="16p-xX-RwY">
-                                                            <rect key="frame" x="0.0" y="46" width="250" height="88"/>
+                                                            <rect key="frame" x="0.0" y="46" width="305" height="88"/>
                                                             <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="18"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episode detail" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Upq-C4-f98">
-                                                            <rect key="frame" x="0.0" y="155" width="250" height="23"/>
+                                                            <rect key="frame" x="0.0" y="155" width="305" height="23"/>
                                                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="19"/>
                                                             <color key="textColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
@@ -104,7 +104,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Aiv-sw-bhb">
-                                                    <rect key="frame" x="24.999999999999986" y="20" width="228.66666666666663" height="27"/>
+                                                    <rect key="frame" x="25" y="20" width="325" height="27"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Details" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="Oek-eQ-YXr">
                                                             <rect key="frame" x="0.0" y="0.0" width="80" height="27"/>
@@ -116,7 +116,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Title of episode" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kgw-4K-b4F">
-                                                            <rect key="frame" x="80" y="0.0" width="124.66666666666669" height="27"/>
+                                                            <rect key="frame" x="80" y="0.0" width="200" height="27"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="200" id="hQ5-pn-wmK"/>
                                                             </constraints>
@@ -125,7 +125,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="navigation-forward" translatesAutoresizingMaskIntoConstraints="NO" id="I92-o0-NAP">
-                                                            <rect key="frame" x="204.66666666666669" y="0.0" width="24" height="27"/>
+                                                            <rect key="frame" x="280" y="0.0" width="45" height="27"/>
                                                         </imageView>
                                                     </subviews>
                                                 </stackView>
@@ -171,13 +171,12 @@
                         </subviews>
                         <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="HCi-iZ-AMX" firstAttribute="bottom" secondItem="MRe-WY-Ppg" secondAttribute="bottom" constant="80" id="E2b-PU-H5f"/>
+                            <constraint firstItem="HCi-iZ-AMX" firstAttribute="bottom" secondItem="MRe-WY-Ppg" secondAttribute="bottom" id="E2b-PU-H5f"/>
                             <constraint firstItem="Efy-iJ-GzP" firstAttribute="leading" secondItem="HCi-iZ-AMX" secondAttribute="leading" constant="15" id="EOK-h1-m5D"/>
                             <constraint firstItem="HCi-iZ-AMX" firstAttribute="bottom" secondItem="1IO-Ph-8PX" secondAttribute="bottom" constant="20" id="I8u-uM-VeY"/>
                             <constraint firstItem="HCi-iZ-AMX" firstAttribute="trailing" secondItem="1IO-Ph-8PX" secondAttribute="trailing" constant="20" id="L2j-q5-TTx"/>
                             <constraint firstItem="MRe-WY-Ppg" firstAttribute="trailing" secondItem="HCi-iZ-AMX" secondAttribute="trailing" id="Wx5-ZI-dTt"/>
                             <constraint firstItem="MRe-WY-Ppg" firstAttribute="top" secondItem="HCi-iZ-AMX" secondAttribute="top" constant="-44" id="i9v-BJ-aMH"/>
-                            <constraint firstItem="1IO-Ph-8PX" firstAttribute="top" secondItem="MRe-WY-Ppg" secondAttribute="bottom" id="mLa-B2-dGc"/>
                             <constraint firstItem="Efy-iJ-GzP" firstAttribute="top" secondItem="Sql-US-LR2" secondAttribute="top" multiplier="0.8" constant="60" id="nwv-eM-36x"/>
                             <constraint firstItem="MRe-WY-Ppg" firstAttribute="leading" secondItem="HCi-iZ-AMX" secondAttribute="leading" id="yM3-9t-pqR"/>
                         </constraints>
