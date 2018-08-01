@@ -161,4 +161,81 @@ class ApiManager {
             }
         }
     }
+    
+    static func getEpisodeDetailsAPICall(episodeId: String, token: String) -> Promise<Episode> {
+        let headers = ["Authorization": token]
+
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request(Constants.URL.episodesUrl + "/\(episodeId)",
+                         method: .get,
+                         encoding: JSONEncoding.default,
+                         headers: headers)
+                .validate()
+                .responseDecodableObject(keyPath: "data") { (response:
+                    DataResponse<Episode>) in
+                    
+                    switch response.result {
+                    case .success(let episode):
+                        seal.fulfill(episode)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    //MARK: - Comments calls -
+    static func getAllComments(episodeId: String, token: String) -> Promise<[Comments]> {
+        let headers = ["Authorization": token]
+        
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request(Constants.URL.episodesUrl + "/\(episodeId)" + Constants.URL.baseCommentsUrl,
+                    method: .get,
+                    encoding: JSONEncoding.default,
+                    headers: headers)
+                .validate()
+                .responseDecodableObject(keyPath: "data") { (response:
+                    DataResponse<[Comments]>) in
+                    
+                    switch response.result {
+                    case .success(let comments):
+                        seal.fulfill(comments)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    static func addComment(parameters: [String: String], token: String) -> Promise<Comments> {
+        let headers = ["Authorization": token]
+
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request(Constants.URL.baseApiUrl + Constants.URL.baseCommentsUrl,
+                         method: .post,
+                         parameters: parameters,
+                         encoding: JSONEncoding.default,
+                         headers: headers)
+                .validate()
+                .responseDecodableObject(keyPath: "data") { (response:
+                    DataResponse<Comments>) in
+                    
+                    switch response.result {
+                    case .success(let comments):
+                        seal.fulfill(comments)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
 }

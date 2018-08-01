@@ -132,7 +132,7 @@ class AddEpisodeViewController: UIViewController, Progressable {
             return
         }
         
-        self.presentAlertWithTextFieldAnimations(title: title, message: message, textFields: textFields)
+        presentAlertWithTextFieldAnimations(title: title, message: message, textFields: textFields)
     }
     
     private func getParameters() -> [String: String]? {

@@ -77,7 +77,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
         isListView = !isListView
         
         collectionView.reloadData()
-        self.navigationItem.setRightBarButton(toggleButton, animated: true)
+        navigationItem.setRightBarButton(toggleButton, animated: true)
     }
     
     @objc private func _logoutActionHandler() {

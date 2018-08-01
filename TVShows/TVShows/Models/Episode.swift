@@ -35,6 +35,7 @@ protocol EpisodeCellItemInterface {
     var title: String { get }
     var season: String { get }
     var episode: String { get }
+    var description: String { get }
 }
 
 extension Episode: EpisodeCellItemInterface {
