@@ -23,6 +23,16 @@
 		5CD4B8F620FD659E000309A5 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD4B8F520FD659E000309A5 /* LoginViewController.swift */; };
 		5CD7B8C520FF4E8300A7C49D /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CD7B8C420FF4E8300A7C49D /* Home.storyboard */; };
 		5CD7B8C720FF504000A7C49D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD7B8C620FF504000A7C49D /* HomeViewController.swift */; };
+		5CE584AF2111F0F6000AECCB /* EpisodeDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584AE2111F0F6000AECCB /* EpisodeDetailsViewController.swift */; };
+		5CE584B12111F10B000AECCB /* Episode.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CE584B02111F10B000AECCB /* Episode.storyboard */; };
+		5CE584B32112223C000AECCB /* EpisodeDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584B22112223C000AECCB /* EpisodeDetailsTableViewCell.swift */; };
+		5CE584B92112285E000AECCB /* EpisodeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584B82112285E000AECCB /* EpisodeImageTableViewCell.swift */; };
+		5CE584BC211237F0000AECCB /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584BB211237F0000AECCB /* CommentsViewController.swift */; };
+		5CE584BE211237FA000AECCB /* Comments.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CE584BD211237FA000AECCB /* Comments.storyboard */; };
+		5CE584C021123ACB000AECCB /* CommentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584BF21123ACB000AECCB /* CommentsTableViewCell.swift */; };
+		5CE584C221123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584C121123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift */; };
+		5CE584C421123B20000AECCB /* AddCommentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584C321123B20000AECCB /* AddCommentTableViewCell.swift */; };
+		5CE584C8211245C0000AECCB /* Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584C7211245C0000AECCB /* Comments.swift */; };
 		5CE6D8AC2109CAA600C4105D /* ShowDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE6D8AB2109CAA600C4105D /* ShowDetailsViewController.swift */; };
 		5CE6D8AF2109CC1C00C4105D /* Details.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CE6D8AE2109CC1C00C4105D /* Details.storyboard */; };
 		5CE6D8B12109CD5600C4105D /* ShowDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE6D8B02109CD5600C4105D /* ShowDetails.swift */; };
@@ -54,6 +64,16 @@
 		5CD4B8F520FD659E000309A5 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		5CD7B8C420FF4E8300A7C49D /* Home.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		5CD7B8C620FF504000A7C49D /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		5CE584AE2111F0F6000AECCB /* EpisodeDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailsViewController.swift; sourceTree = "<group>"; };
+		5CE584B02111F10B000AECCB /* Episode.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Episode.storyboard; sourceTree = "<group>"; };
+		5CE584B22112223C000AECCB /* EpisodeDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeDetailsTableViewCell.swift; sourceTree = "<group>"; };
+		5CE584B82112285E000AECCB /* EpisodeImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeImageTableViewCell.swift; sourceTree = "<group>"; };
+		5CE584BB211237F0000AECCB /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
+		5CE584BD211237FA000AECCB /* Comments.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Comments.storyboard; sourceTree = "<group>"; };
+		5CE584BF21123ACB000AECCB /* CommentsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsTableViewCell.swift; sourceTree = "<group>"; };
+		5CE584C121123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsEmptyStateTableViewCell.swift; sourceTree = "<group>"; };
+		5CE584C321123B20000AECCB /* AddCommentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCommentTableViewCell.swift; sourceTree = "<group>"; };
+		5CE584C7211245C0000AECCB /* Comments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comments.swift; sourceTree = "<group>"; };
 		5CE6D8AB2109CAA600C4105D /* ShowDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowDetailsViewController.swift; sourceTree = "<group>"; };
 		5CE6D8AE2109CC1C00C4105D /* Details.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Details.storyboard; sourceTree = "<group>"; };
 		5CE6D8B02109CD5600C4105D /* ShowDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowDetails.swift; sourceTree = "<group>"; };
@@ -87,6 +107,7 @@
 				5C5E80AA2107A9B900F0A16A /* Show.swift */,
 				5CE6D8B02109CD5600C4105D /* ShowDetails.swift */,
 				5CE6D8BE210A6DEB00C4105D /* Episode.swift */,
+				5CE584C7211245C0000AECCB /* Comments.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -165,16 +186,36 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
+		5CE584AD2111EB9D000AECCB /* EpisodeDetails */ = {
+			isa = PBXGroup;
+			children = (
+				5CE584AE2111F0F6000AECCB /* EpisodeDetailsViewController.swift */,
+				5CE584B02111F10B000AECCB /* Episode.storyboard */,
+				5CE584B22112223C000AECCB /* EpisodeDetailsTableViewCell.swift */,
+				5CE584B82112285E000AECCB /* EpisodeImageTableViewCell.swift */,
+			);
+			path = EpisodeDetails;
+			sourceTree = "<group>";
+		};
+		5CE584BA211237CB000AECCB /* EpisodeComments */ = {
+			isa = PBXGroup;
+			children = (
+				5CE584BB211237F0000AECCB /* CommentsViewController.swift */,
+				5CE584BD211237FA000AECCB /* Comments.storyboard */,
+				5CE584BF21123ACB000AECCB /* CommentsTableViewCell.swift */,
+				5CE584C121123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift */,
+				5CE584C321123B20000AECCB /* AddCommentTableViewCell.swift */,
+			);
+			path = EpisodeComments;
+			sourceTree = "<group>";
+		};
 		5CE6D8AD2109CBC000C4105D /* Details */ = {
 			isa = PBXGroup;
 			children = (
+				5CE584BA211237CB000AECCB /* EpisodeComments */,
+				5CE584AD2111EB9D000AECCB /* EpisodeDetails */,
 				5CE6D8B9210A4EDF00C4105D /* AddEpisode */,
 				5CE6D8B8210A4E9B00C4105D /* ShowDetails */,
-				5CE6D8AE2109CC1C00C4105D /* Details.storyboard */,
-				5CE6D8AB2109CAA600C4105D /* ShowDetailsViewController.swift */,
-				5CE6D8B22109D35F00C4105D /* ShowDescriptionTableViewCell.swift */,
-				5CE6D8B42109D37400C4105D /* EpisodeTableViewCell.swift */,
-				5CE6D8B62109DA4300C4105D /* ShowImageTableViewCell.swift */,
 			);
 			path = Details;
 			sourceTree = "<group>";
@@ -182,6 +223,11 @@
 		5CE6D8B8210A4E9B00C4105D /* ShowDetails */ = {
 			isa = PBXGroup;
 			children = (
+				5CE6D8AE2109CC1C00C4105D /* Details.storyboard */,
+				5CE6D8AB2109CAA600C4105D /* ShowDetailsViewController.swift */,
+				5CE6D8B22109D35F00C4105D /* ShowDescriptionTableViewCell.swift */,
+				5CE6D8B42109D37400C4105D /* EpisodeTableViewCell.swift */,
+				5CE6D8B62109DA4300C4105D /* ShowImageTableViewCell.swift */,
 			);
 			path = ShowDetails;
 			sourceTree = "<group>";
@@ -272,7 +318,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CE584BE211237FA000AECCB /* Comments.storyboard in Resources */,
 				5CE6D8AF2109CC1C00C4105D /* Details.storyboard in Resources */,
+				5CE584B12111F10B000AECCB /* Episode.storyboard in Resources */,
 				5C715FBA20EE6F4600E36A61 /* LaunchScreen.storyboard in Resources */,
 				5CE6D8BB210A4EFA00C4105D /* AddEpisode.storyboard in Resources */,
 				5C715FB720EE6F4600E36A61 /* Assets.xcassets in Resources */,
@@ -340,20 +388,28 @@
 				5C5AFFEE2100C35400436A89 /* User.swift in Sources */,
 				5CC5D8D721106B8A00BA10CE /* Constants.swift in Sources */,
 				5CD4B8F620FD659E000309A5 /* LoginViewController.swift in Sources */,
+				5CE584AF2111F0F6000AECCB /* EpisodeDetailsViewController.swift in Sources */,
 				5CCEAA93210916A900507922 /* Protocols.swift in Sources */,
+				5CE584C421123B20000AECCB /* AddCommentTableViewCell.swift in Sources */,
 				5C715FB020EE6F4400E36A61 /* AppDelegate.swift in Sources */,
 				5CE6D8B12109CD5600C4105D /* ShowDetails.swift in Sources */,
+				5CE584C021123ACB000AECCB /* CommentsTableViewCell.swift in Sources */,
 				5CE6D8B72109DA4300C4105D /* ShowImageTableViewCell.swift in Sources */,
 				5C5E80AB2107A9B900F0A16A /* Show.swift in Sources */,
+				5CE584C8211245C0000AECCB /* Comments.swift in Sources */,
 				5C92E5E5210F713900E6584F /* HomeListCollectionViewCell.swift in Sources */,
 				5C1DAB7F210DFABD00E6CA96 /* Notifications.swift in Sources */,
 				5CD7B8C720FF504000A7C49D /* HomeViewController.swift in Sources */,
 				5CC5D8DA21107D6200BA10CE /* ApiManager.swift in Sources */,
 				5CE6D8AC2109CAA600C4105D /* ShowDetailsViewController.swift in Sources */,
+				5CE584BC211237F0000AECCB /* CommentsViewController.swift in Sources */,
 				5CE6D8B52109D37400C4105D /* EpisodeTableViewCell.swift in Sources */,
+				5CE584B92112285E000AECCB /* EpisodeImageTableViewCell.swift in Sources */,
 				5C5E80B32108BB8100F0A16A /* Alert.swift in Sources */,
 				5CE6D8BD210A4F1300C4105D /* AddEpisodeViewController.swift in Sources */,
 				5CE6D8BF210A6DEB00C4105D /* Episode.swift in Sources */,
+				5CE584C221123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift in Sources */,
+				5CE584B32112223C000AECCB /* EpisodeDetailsTableViewCell.swift in Sources */,
 				5C92E5E7210F71AF00E6584F /* HomeGridCollectionViewCell.swift in Sources */,
 				5CE6D8B32109D35F00C4105D /* ShowDescriptionTableViewCell.swift in Sources */,
 			);

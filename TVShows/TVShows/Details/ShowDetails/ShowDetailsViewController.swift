@@ -35,8 +35,8 @@ class ShowDetailsViewController: UIViewController, Progressable {
     //MARK: - Controller functions -
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tableView.tableFooterView = UIView()
         
+        tableView.tableFooterView = UIView()
         loadDetails()
     }
 
@@ -60,14 +60,10 @@ class ShowDetailsViewController: UIViewController, Progressable {
                 return ApiManager.getAllEpisodesAPICall(token: self.token, showId: self.showId)
             })
             .done { [weak self] (episodes) in
-                guard let `self` = self else { return }
-                
-                self.episodesList = episodes
+                self?.episodesList = episodes
             }
             .catch { [weak self] (error) in
-                guard let `self` = self else { return }
-                
-                self.presentAlert(title: "API error", message: "Something went wrong")
+                self?.presentAlert(title: "API error", message: "Something went wrong")
             }
             .finally { [weak self] in
                 self?.hideSpinner()
@@ -107,6 +103,19 @@ extension ShowDetailsViewController: AddEpisodeControllerDelegate {
 
 extension ShowDetailsViewController: UITableViewDelegate {
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath.row > 1 else { return }
+        
+        let episodeStoryboard: UIStoryboard = UIStoryboard(name: "Episode", bundle: nil)
+        let episodeDetailsViewController =
+            episodeStoryboard.instantiateViewController(withIdentifier: "EpisodeDetailsViewController")
+                as! EpisodeDetailsViewController
+        
+        episodeDetailsViewController.setup(episodeId: episodesList[indexPath.row - 2].id, token: token)
+        
+        navigationController?.show(episodeDetailsViewController, sender: self)
+        
+    }
 }
 
 extension ShowDetailsViewController: UITableViewDataSource {
