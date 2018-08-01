@@ -7,10 +7,8 @@
 //
 
 import UIKit
-import Alamofire
-import CodableAlamofire
-import SVProgressHUD
 import PromiseKit
+import KeychainAccess
 
 class LoginViewController: UIViewController, Progressable {
     
@@ -30,70 +28,66 @@ class LoginViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter
-            .default
-            .addObserver(
-                self,
-                selector: #selector(LoginViewController.keyboardWillShow(_:)),
-                name: Notification.Name.UIKeyboardWillShow,
-                object: nil)
-        
-        NotificationCenter
-            .default
-            .addObserver(
-                self,
-                selector: #selector(LoginViewController.keyboardWillHide(_:)),
-                name: Notification.Name.UIKeyboardWillHide,
-                object: nil)
+        checkKeychainLogin()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        registerKeyboardNotifications()
+        
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
+    private func checkKeychainLogin() {
+        let keychain: Keychain = Constants.KeychainEnum.keychain
+        guard
+            let email = keychain["email"],
+            let password = keychain["password"]
+            else {
+                return
+        }
+        
+        let parameters: [String: String] = [
+            "email": email,
+            "password": password
+        ]
+        
+        login(parameters: parameters)
+    }
+    
     //MARK: - Notification functions -
-    deinit {
-        NotificationCenter.default.removeObserver(self)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+    }
+   
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        adjustKeyboard(true, notification: notification, scrollView: scrollView)
     }
     
-    func adjustKeyboard(_ isKeyboardShown: Bool, notification: Notification) {
-        let userInfo = notification.userInfo ?? [:]
-        let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
-        
-        let keyboardVisibleHeight: CGFloat = keyboardFrame.height
-        var height = keyboardVisibleHeight
-        
-        if #available(iOS 11.0, *), keyboardVisibleHeight > 0 {
-            height = height - view.safeAreaInsets.bottom
-        }
-        
-        let insetsShow = UIEdgeInsets(
-            top: 0,
-            left: 0,
-            bottom: height,
-            right: 0
-        )
-        let insetsHide = UIEdgeInsets(
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0
-        )
-        scrollView.contentInset = isKeyboardShown ? insetsShow : insetsHide
-        
-        view.setNeedsLayout()
-        UIView.animate(withDuration: 0.25) {
-            self.view.layoutIfNeeded()
-        }
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        adjustKeyboard(false, notification: notification, scrollView: scrollView)
     }
     
-    @objc func keyboardWillShow(_ notification: Notification) {
-        adjustKeyboard(true, notification: notification)
-    }
-    @objc func keyboardWillHide(_ notification: Notification) {
-        adjustKeyboard(false, notification: notification)
+    private func registerKeyboardNotifications() {
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(keyboardWillShow(_:)),
+                name: .UIKeyboardWillShow,
+                object: nil)
+        
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(keyboardWillHide(_:)),
+                name: .UIKeyboardWillHide,
+                object: nil)
     }
     
     //MARK: - Strategic functions -
@@ -111,11 +105,18 @@ class LoginViewController: UIViewController, Progressable {
                 "password": password]
     }
     
-    private func handleError(title: String, message: String) {
-        self.presentAlert(title: title, message: message)
+    private func handleError(title: String, message: String, textFields: [UITextField]?) {
+        guard let textFields = textFields else {
+            self.presentAlert(title: title, message: message)
+            
+            emailTextField.text = nil
+            passwordTextField.text = nil
+            return
+        }
         
-        emailTextField.text = nil
-        passwordTextField.text = nil
+        self.presentAlertWithTextFieldAnimations(title: title,
+                                                 message: message,
+                                                 textFields: textFields)
     }
     
     private func navigateToHomeViewController(loginData: LoginData) {
@@ -123,61 +124,17 @@ class LoginViewController: UIViewController, Progressable {
         let homeViewController =
             homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
                 as! HomeViewController
-        homeViewController.setLoginData(loginData: loginData)
+        
+        homeViewController.setToken(token: loginData.token)
+        homeViewController.title = "TV Shows"
         
         navigationController?.setViewControllers([homeViewController], animated: true)
     }
     
-    //MARK: - API call functions -
-    private func loginAPICall(parameters: [String: String]) -> Promise<LoginData> {
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/users/sessions",
-                         method: .post,
-                         parameters: parameters,
-                         encoding: JSONEncoding.default)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<LoginData>) in
-                    
-                    switch response.result {
-                    case .success(let loginDataResult):
-                        seal.fulfill(loginDataResult)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-    
-    private func registerAPICall(parameters: [String: String]) -> Promise<User> {
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/users",
-                         method: .post,
-                         parameters: parameters,
-                         encoding: JSONEncoding.default)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<User>) in
-                    
-                    switch response.result {
-                    case .success(let userResult):
-                        seal.fulfill(userResult)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-    
+    //MARK: - Api functions -
     private func register(parameters: [String: String]) {
         showSpinner()
-        registerAPICall(parameters: parameters)
+        ApiManager.registerAPICall(parameters: parameters)
             .done { [weak self] (user) in
                 guard let `self` = self else { return }
                 
@@ -188,7 +145,9 @@ class LoginViewController: UIViewController, Progressable {
                 guard let `self` = self else { return }
                 
                 print("API failure: \(error)")
-                self.handleError(title: "API error", message: "Something went wrong")
+                self.handleError(title: "API error",
+                                 message: "Something went wrong",
+                                 textFields: [self.emailTextField, self.passwordTextField])
             }
             .finally { [weak self] in
                 self?.hideSpinner()
@@ -197,9 +156,15 @@ class LoginViewController: UIViewController, Progressable {
     
     private func login(parameters: [String: String]) {
         showSpinner()
-        loginAPICall(parameters: parameters)
+        ApiManager.loginAPICall(parameters: parameters)
             .done { [weak self] (loginData) in
                 guard let `self` = self else { return }
+                
+                if self.checkmarkButton.isSelected {
+                    let keychain: Keychain = Constants.KeychainEnum.keychain
+                    keychain["email"] = parameters["email"]
+                    keychain["password"] = parameters["password"]
+                }
                 
                 self.loginData = loginData
                 self.navigateToHomeViewController(loginData: loginData)
@@ -208,7 +173,9 @@ class LoginViewController: UIViewController, Progressable {
                 guard let `self` = self else { return }
                 
                 print("API failure: \(error)")
-                self.handleError(title: "API error", message: "Something went wrong")
+                self.handleError(title: "API error",
+                                 message: "Something went wrong",
+                                 textFields: [self.emailTextField, self.passwordTextField])
             }.finally { [weak self] in
                 self?.hideSpinner()
         }
@@ -216,9 +183,11 @@ class LoginViewController: UIViewController, Progressable {
     
     //MARK: - Actions -
     @IBAction
-    func createAccountAction(_ sender: UIButton) {
+    private func createAccountAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            handleError(title: "User input error", message: "Invalid username or password")
+            handleError(title: "User input error",
+                        message: "Invalid username or password",
+                        textFields: [emailTextField, passwordTextField])
             return
         }
         
@@ -226,9 +195,11 @@ class LoginViewController: UIViewController, Progressable {
     }
     
     @IBAction
-    func loginAction(_ sender: UIButton) {
+    private func loginAction(_ sender: UIButton) {
         guard let parameters = getParameters() else {
-            handleError(title: "User input error", message: "Invalid username or password")
+            handleError(title: "User input error",
+                        message: "Invalid username or password",
+                        textFields: [emailTextField, passwordTextField])
             return
         }
         
@@ -236,7 +207,7 @@ class LoginViewController: UIViewController, Progressable {
     }
     
     @IBAction
-    func checkmarkAction(_ sender: UIButton) {
+    private func checkmarkAction(_ sender: UIButton) {
         checkmarkButton.isSelected = !checkmarkButton.isSelected
     }
 }

@@ -7,13 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C1DAB7F210DFABD00E6CA96 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1DAB7E210DFABD00E6CA96 /* Notifications.swift */; };
 		5C5AFFEE2100C35400436A89 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5AFFED2100C35400436A89 /* User.swift */; };
 		5C5E80AB2107A9B900F0A16A /* Show.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5E80AA2107A9B900F0A16A /* Show.swift */; };
-		5C5E80B12108A03400F0A16A /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5E80B02108A03400F0A16A /* HomeTableViewCell.swift */; };
 		5C5E80B32108BB8100F0A16A /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5E80B22108BB8100F0A16A /* Alert.swift */; };
 		5C715FB020EE6F4400E36A61 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C715FAF20EE6F4400E36A61 /* AppDelegate.swift */; };
 		5C715FB720EE6F4600E36A61 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C715FB620EE6F4600E36A61 /* Assets.xcassets */; };
 		5C715FBA20EE6F4600E36A61 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C715FB820EE6F4600E36A61 /* LaunchScreen.storyboard */; };
+		5C92E5E5210F713900E6584F /* HomeListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C92E5E4210F713900E6584F /* HomeListCollectionViewCell.swift */; };
+		5C92E5E7210F71AF00E6584F /* HomeGridCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C92E5E6210F71AF00E6584F /* HomeGridCollectionViewCell.swift */; };
+		5CC5D8D721106B8A00BA10CE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC5D8D621106B8A00BA10CE /* Constants.swift */; };
+		5CC5D8DA21107D6200BA10CE /* ApiManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC5D8D921107D6200BA10CE /* ApiManager.swift */; };
 		5CCEAA93210916A900507922 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CCEAA92210916A900507922 /* Protocols.swift */; };
 		5CD4B8F420FD657E000309A5 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CD4B8F320FD657E000309A5 /* Login.storyboard */; };
 		5CD4B8F620FD659E000309A5 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD4B8F520FD659E000309A5 /* LoginViewController.swift */; };
@@ -32,15 +36,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C1DAB7E210DFABD00E6CA96 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		5C5AFFED2100C35400436A89 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		5C5E80AA2107A9B900F0A16A /* Show.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Show.swift; sourceTree = "<group>"; };
-		5C5E80B02108A03400F0A16A /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
 		5C5E80B22108BB8100F0A16A /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		5C715FAC20EE6F4400E36A61 /* TVShows.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TVShows.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C715FAF20EE6F4400E36A61 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5C715FB620EE6F4600E36A61 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5C715FB920EE6F4600E36A61 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5C715FBB20EE6F4600E36A61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C92E5E4210F713900E6584F /* HomeListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeListCollectionViewCell.swift; sourceTree = "<group>"; };
+		5C92E5E6210F71AF00E6584F /* HomeGridCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeGridCollectionViewCell.swift; sourceTree = "<group>"; };
+		5CC5D8D621106B8A00BA10CE /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		5CC5D8D921107D6200BA10CE /* ApiManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiManager.swift; sourceTree = "<group>"; };
 		5CCEAA92210916A900507922 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		5CD4B8F320FD657E000309A5 /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		5CD4B8F520FD659E000309A5 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
@@ -104,6 +112,7 @@
 		5C715FAE20EE6F4400E36A61 /* TVShows */ = {
 			isa = PBXGroup;
 			children = (
+				5CC5D8D821107D4400BA10CE /* Networking */,
 				5CE6D8AD2109CBC000C4105D /* Details */,
 				5CCEAA912109168F00507922 /* Commons */,
 				5C5AFFEC2100C33D00436A89 /* Models */,
@@ -126,11 +135,21 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		5CC5D8D821107D4400BA10CE /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				5CC5D8D921107D6200BA10CE /* ApiManager.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
 		5CCEAA912109168F00507922 /* Commons */ = {
 			isa = PBXGroup;
 			children = (
 				5CCEAA92210916A900507922 /* Protocols.swift */,
 				5C5E80B22108BB8100F0A16A /* Alert.swift */,
+				5C1DAB7E210DFABD00E6CA96 /* Notifications.swift */,
+				5CC5D8D621106B8A00BA10CE /* Constants.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -140,7 +159,8 @@
 			children = (
 				5CD7B8C420FF4E8300A7C49D /* Home.storyboard */,
 				5CD7B8C620FF504000A7C49D /* HomeViewController.swift */,
-				5C5E80B02108A03400F0A16A /* HomeTableViewCell.swift */,
+				5C92E5E4210F713900E6584F /* HomeListCollectionViewCell.swift */,
+				5C92E5E6210F71AF00E6584F /* HomeGridCollectionViewCell.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -273,6 +293,8 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-TVShows/Pods-TVShows-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/CodableAlamofire/CodableAlamofire.framework",
+				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
+				"${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework",
 				"${BUILT_PRODUCTS_DIR}/PromiseKit/PromiseKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 			);
@@ -280,6 +302,8 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CodableAlamofire.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Kingfisher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PromiseKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 			);
@@ -314,19 +338,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				5C5AFFEE2100C35400436A89 /* User.swift in Sources */,
+				5CC5D8D721106B8A00BA10CE /* Constants.swift in Sources */,
 				5CD4B8F620FD659E000309A5 /* LoginViewController.swift in Sources */,
-				5C5E80B12108A03400F0A16A /* HomeTableViewCell.swift in Sources */,
 				5CCEAA93210916A900507922 /* Protocols.swift in Sources */,
 				5C715FB020EE6F4400E36A61 /* AppDelegate.swift in Sources */,
 				5CE6D8B12109CD5600C4105D /* ShowDetails.swift in Sources */,
 				5CE6D8B72109DA4300C4105D /* ShowImageTableViewCell.swift in Sources */,
 				5C5E80AB2107A9B900F0A16A /* Show.swift in Sources */,
+				5C92E5E5210F713900E6584F /* HomeListCollectionViewCell.swift in Sources */,
+				5C1DAB7F210DFABD00E6CA96 /* Notifications.swift in Sources */,
 				5CD7B8C720FF504000A7C49D /* HomeViewController.swift in Sources */,
+				5CC5D8DA21107D6200BA10CE /* ApiManager.swift in Sources */,
 				5CE6D8AC2109CAA600C4105D /* ShowDetailsViewController.swift in Sources */,
 				5CE6D8B52109D37400C4105D /* EpisodeTableViewCell.swift in Sources */,
 				5C5E80B32108BB8100F0A16A /* Alert.swift in Sources */,
 				5CE6D8BD210A4F1300C4105D /* AddEpisodeViewController.swift in Sources */,
 				5CE6D8BF210A6DEB00C4105D /* Episode.swift in Sources */,
+				5C92E5E7210F71AF00E6584F /* HomeGridCollectionViewCell.swift in Sources */,
 				5CE6D8B32109D35F00C4105D /* ShowDescriptionTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

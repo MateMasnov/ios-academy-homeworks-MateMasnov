@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 struct ImageCellItem {
     let url: String
@@ -18,23 +19,20 @@ class ShowImageTableViewCell: UITableViewCell {
     @IBOutlet weak var showImageView: UIImageView!
     
     //MARK: - Functions -
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
     override func prepareForReuse() {
         super.prepareForReuse()
-        //nesto
+        
+        showImageView.image = nil
     }
     
     func configure(with item: ImageCellItem) {
-        //kingfisher pod moras
+        let url = URL(string: "https://api.infinum.academy" + item.url)
+        let placeholder: UIImage = UIImage(named: "login-logo")!
+        showImageView.contentMode = .center
+        
+        showImageView.kf.setImage(with: url, placeholder: placeholder) { [weak self] image, _, _, _ in
+            if image == nil { return }
+            self?.showImageView.contentMode = .scaleToFill
+        }
     }
 }

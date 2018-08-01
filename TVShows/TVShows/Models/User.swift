@@ -8,7 +8,6 @@
 
 import Foundation
 
-//MARK: - Structures -
 struct User: Codable {
     let email: String
     let type: String

@@ -40,8 +40,11 @@ class ShowDescriptionTableViewCell: UITableViewCell {
     }
     
     func configure(with item: DescriptionCellItem) {
-        titleLabel.text = item.title
-        descriptionLabel.text = item.description
+        let description: String = item.description == "" ? "No description" : item.description
+        let title: String = item.title == "" ? "No title" : item.title
+        
+        titleLabel.text = title
+        descriptionLabel.text = description
         episodesLabel.text = "Episodes   \(item.numberOfEpisodes)"
     }
 }

@@ -8,7 +8,6 @@
 
 import UIKit
 import PromiseKit
-import CodableAlamofire
 
 class ShowDetailsViewController: UIViewController, Progressable {
 
@@ -16,7 +15,11 @@ class ShowDetailsViewController: UIViewController, Progressable {
     private var showId: String!
     private var token: String!
     private var showDetails: ShowDetails?
-    private var episodesList: [Show] = []
+    private var episodesList: [Episode] = [] {
+        didSet {
+            tableView.reloadData()
+        }
+    }
     
     //MARK: - Outlets -
     @IBOutlet weak var tableView: UITableView! {
@@ -24,6 +27,8 @@ class ShowDetailsViewController: UIViewController, Progressable {
             tableView.dataSource = self
             tableView.delegate = self
             tableView.estimatedRowHeight = 100
+            tableView.separatorStyle = .none
+            tableView.contentInset.bottom = 80
         }
     }
     
@@ -41,77 +46,23 @@ class ShowDetailsViewController: UIViewController, Progressable {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    func setShowId(showId: String) {
-        self.showId = showId
-    }
-    
-    func setToken(token: String) {
+    func setup(token: String, showId: String) {
         self.token = token
+        self.showId = showId
     }
 
     //MARK: - API functions -
-    private func getDetailsAPICall(token: String, showId: String) -> Promise<ShowDetails> {
-        let headers = ["Authorization": token]
-        
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/shows/\(showId)",
-                         method: .get,
-                         encoding: JSONEncoding.default,
-                         headers: headers)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<ShowDetails>) in
-                    
-                    switch response.result {
-                    case .success(let detailsResponse):
-                        seal.fulfill(detailsResponse)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-    
-    private func getAllEpisodesAPICall(token: String, showId: String) -> Promise<[Show]> {
-        let headers = ["Authorization": token]
-        
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/shows/\(showId)/episodes",
-                    method: .get,
-                    encoding: JSONEncoding.default,
-                    headers: headers)
-                .validate()
-                .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {
-                    (response: DataResponse<[Show]>) in
-                    
-                    switch response.result {
-                    case .success(let episodes):
-                        seal.fulfill(episodes)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-    
     private func loadDetails() {
         showSpinner()
-        getDetailsAPICall(token: token, showId: showId)
-            .then({ (showDetails) -> Promise<[Show]> in
+        ApiManager.getShowDetailsAPICall(token: token, showId: showId)
+            .then({ (showDetails) -> Promise<[Episode]> in
                 self.showDetails = showDetails
-                return self.getAllEpisodesAPICall(token: self.token, showId: self.showId)
+                return ApiManager.getAllEpisodesAPICall(token: self.token, showId: self.showId)
             })
             .done { [weak self] (episodes) in
                 guard let `self` = self else { return }
                 
                 self.episodesList = episodes
-                self.tableView.reloadData()
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
@@ -125,21 +76,21 @@ class ShowDetailsViewController: UIViewController, Progressable {
     
     //MARK: - Actions -
     @IBAction
-    func backButtonAction(_ sender: Any) {
+    private func backButtonAction(_ sender: Any) {
         navigationController?.popViewController(animated: true)
     }
     
     @IBAction
-    func addEpisodeAction(_ sender: Any) {
+    private func addEpisodeAction(_ sender: Any) {
         let addEpisodeStoryboard: UIStoryboard = UIStoryboard(name: "AddEpisode", bundle: nil)
         let addEpisodeViewController =
             addEpisodeStoryboard.instantiateViewController(withIdentifier: "AddEpisodeViewController")
                 as! AddEpisodeViewController
-        let navigationController = UINavigationController.init(rootViewController: addEpisodeViewController)
+        let navigationController = UINavigationController(rootViewController: addEpisodeViewController)
         
+        addEpisodeViewController.title = "Add episode"
         addEpisodeViewController.delegate = self
-        addEpisodeViewController.setToken(token: token)
-        addEpisodeViewController.setShowId(showId: showId)
+        addEpisodeViewController.setup(token: token, showId: showId)
         
         present(navigationController, animated: true, completion: nil)
     }
@@ -149,10 +100,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
 extension ShowDetailsViewController: AddEpisodeControllerDelegate {
     func addedEpisode(episode: Episode) {
         showSpinner()
-        
-        let newShow: Show = Show(id: episode.showId, title: episode.title, imageUrl: episode.imageUrl, likesCount: nil)
-        episodesList.append(newShow)
-        tableView.reloadData()
+        episodesList.append(episode)
         hideSpinner()
     }
 }
@@ -184,7 +132,9 @@ extension ShowDetailsViewController: UITableViewDataSource {
                 for: indexPath
                 ) as! ShowImageTableViewCell
             
-            let item: ImageCellItem = ImageCellItem(url: "")
+            guard let showDetails = showDetails else { return cell }
+            
+            let item: ImageCellItem = ImageCellItem(url: showDetails.imageUrl)
             
             cell.configure(with: item)
             
@@ -197,8 +147,10 @@ extension ShowDetailsViewController: UITableViewDataSource {
             
             guard let showDetails = showDetails else { return cell }
             
-            let description: String = showDetails.description == "" ? "No description" : showDetails.description
-            let item: DescriptionCellItem = DescriptionCellItem(title: showDetails.title, description: description, numberOfEpisodes: episodesList.count)
+            let item: DescriptionCellItem = DescriptionCellItem(
+                title: showDetails.title,
+                description: showDetails.description,
+                numberOfEpisodes: episodesList.count)
             
             cell.configure(with: item)
             
@@ -208,11 +160,8 @@ extension ShowDetailsViewController: UITableViewDataSource {
                 withIdentifier: "EpisodeTableViewCell",
                 for: indexPath
                 ) as! EpisodeTableViewCell
-            
-            let title: String = episodesList[row - 2].title == "" ? "No title" : episodesList[row - 2].title
-            let item: EpisodeCellItem = EpisodeCellItem(title: title, details: "S2 E\(row - 1)")
-            
-            cell.configure(with: item)
+                 
+            cell.configure(with: episodesList[row - 2])
             
             return cell
         }

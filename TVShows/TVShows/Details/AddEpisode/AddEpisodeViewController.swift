@@ -8,8 +8,6 @@
 
 import UIKit
 import PromiseKit
-import CodableAlamofire
-import Alamofire
 
 protocol AddEpisodeControllerDelegate: class {
     func addedEpisode(episode: Episode)
@@ -27,14 +25,35 @@ class AddEpisodeViewController: UIViewController, Progressable {
     @IBOutlet weak var seasonNumberField: UITextField!
     @IBOutlet weak var episodeNumberField: UITextField!
     @IBOutlet weak var episodeDescriptionField: UITextField!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     //MARK: - Controller functions -
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Add episode"
+        setNavigationItems()
+        episodeTitleField.delegate = self
+        seasonNumberField.delegate = self
+        episodeDescriptionField.delegate = self
+        episodeNumberField.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    
         navigationController?.navigationBar.barTintColor = .white
         navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
+        registerKeyboardNotifications()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+    }
+    
+    private func setNavigationItems() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel",
                                                            style: .plain,
                                                            target: self,
@@ -46,43 +65,75 @@ class AddEpisodeViewController: UIViewController, Progressable {
                                                             action: #selector(didSelectAddShow))
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
+    func setup(token: String, showId: String) {
+        self.token = token
+        self.showId = showId
     }
     
-    //MARK: - Functions -
-    @objc func didSelectAddShow() {
+    //MARK: - Keyboard notifications -
+    @objc private func keyboardWillShow(_ notification: Notification) {
+        adjustKeyboard(true, notification: notification, scrollView: scrollView)
+    }
+    
+    @objc private func keyboardWillHide(_ notification: Notification) {
+        adjustKeyboard(false, notification: notification, scrollView: scrollView)
+    }
+    
+    private func registerKeyboardNotifications() {
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(keyboardWillShow(_:)),
+                name: .UIKeyboardWillShow,
+                object: nil)
+        
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(keyboardWillHide(_:)),
+                name: .UIKeyboardWillHide,
+                object: nil)
+    }
+    
+    //MARK: - Bar button actions -
+    @objc private func didSelectAddShow() {
         guard let parameters = getParameters() else {
-            handleError(title: "Input error", message: "Invalid text input")
+            let textFields: [UITextField] = [
+                episodeTitleField,
+                episodeDescriptionField,
+                episodeNumberField,
+                seasonNumberField
+            ]
+        
+            handleError(title: "Input error",
+                        message: "Invalid text input",
+                        textFields: textFields)
             return
         }
         
         addEpisode(parameters: parameters)
     }
     
-    @objc func didSelectCancelShow() {
+    @objc private func didSelectCancelShow() {
         dismiss(animated: true, completion: nil)
     }
     
-    func setToken(token: String) {
-        self.token = token
-    }
-    
-    func setShowId(showId: String) {
-        self.showId = showId
-    }
-    
     //MARK: - Strategic functions -
-    private func handleError(title: String, message: String) {
-        self.presentAlert(title: title, message: message)
+    private func handleError(title: String, message: String, textFields: [UITextField]?) {
+        guard let textFields = textFields else {
+            presentAlert(title: title, message: message)
+            
+            episodeTitleField.text = nil
+            episodeDescriptionField.text = nil
+            episodeNumberField.text = nil
+            seasonNumberField.text = nil
+            return
+        }
         
-        episodeTitleField.text = nil
-        episodeDescriptionField.text = nil
-        episodeNumberField.text = nil
-        seasonNumberField.text = nil
+        self.presentAlertWithTextFieldAnimations(title: title, message: message, textFields: textFields)
     }
-
     
     private func getParameters() -> [String: String]? {
         guard
@@ -108,35 +159,11 @@ class AddEpisodeViewController: UIViewController, Progressable {
     }
     
     //MARK: - API functions -
-    private func addEpisodeAPICall(parameters: [String: String]) -> Promise<Episode> {
+    private func addEpisode(parameters: [String: String]) {
         let headers: [String: String] = ["Authorization": token]
         
-        return Promise {
-            seal in
-            
-            Alamofire
-                .request("https://api.infinum.academy/api/episodes",
-                         method: .post,
-                         parameters: parameters,
-                         encoding: JSONEncoding.default,
-                         headers: headers)
-                .validate()
-                .responseDecodableObject(keyPath: "data") { (response:
-                    DataResponse<Episode>) in
-    
-                    switch response.result {
-                    case .success(let episode):
-                        seal.fulfill(episode)
-                    case .failure(let error):
-                        seal.reject(error)
-                    }
-            }
-        }
-    }
-    
-    private func addEpisode(parameters: [String: String]) {
         showSpinner()
-        addEpisodeAPICall(parameters: parameters)
+        ApiManager.addEpisodeAPICall(parameters: parameters, headers: headers)
             .done { [weak self] (result) in
                 guard let `self` = self else { return }
                 
@@ -146,10 +173,41 @@ class AddEpisodeViewController: UIViewController, Progressable {
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
 
+                let textFields: [UITextField] = [
+                    self.episodeTitleField,
+                    self.episodeDescriptionField,
+                    self.episodeNumberField,
+                    self.seasonNumberField
+                ]
+                
                 print("API failure: \(error)")
-                self.handleError(title: "API error", message: "Something went wrong")
+                self.handleError(title: "API error",
+                                 message: "Something went wrong",
+                                 textFields: textFields)
             }.finally { [weak self] in
                 self?.hideSpinner()
         }
+    }
+}
+
+//MARK: - Extensions -
+extension AddEpisodeViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == episodeTitleField {
+            seasonNumberField.becomeFirstResponder()
+        }
+        if textField == seasonNumberField {
+            episodeNumberField.becomeFirstResponder()
+        }
+        if textField == episodeNumberField {
+            episodeDescriptionField.becomeFirstResponder()
+        }
+        if textField == episodeDescriptionField {
+            textField.resignFirstResponder()
+            didSelectAddShow()
+        }
+        
+        return true
     }
 }
