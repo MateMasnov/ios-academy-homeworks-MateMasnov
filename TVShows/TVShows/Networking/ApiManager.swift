@@ -10,6 +10,7 @@ import Foundation
 import CodableAlamofire
 import Alamofire
 import PromiseKit
+import CoreMedia
 
 class ApiManager {
     //MARK: - Login calls -
@@ -239,7 +240,7 @@ class ApiManager {
         }
     }
     
-    static func deleteComment(commentId: String, token: String) -> Promise<String> {
+    static func deleteComment(commentId: String, token: String) -> Promise<Void> {
         let headers = ["Authorization": token]
         
         return Promise {
@@ -252,15 +253,64 @@ class ApiManager {
                     encoding: JSONEncoding.default,
                     headers: headers)
                 .validate()
-                .responseDecodableObject() { (response: DataResponse<String>) in
-                
-                    switch response.result {
-                    case .success(let result):
-                        seal.fulfill(result)
-                    case .failure(let error):
+                .response(completionHandler: { (response) in
+                    guard
+                        let status: Int = response.response?.statusCode,
+                        status >= 200, status <= 400
+                    else {
+                        guard let error = response.error else { return }
                         seal.reject(error)
+                        return
                     }
-                }
+                    
+                    seal.fulfill(())
+                    
+                })
         }
     }
+    
+    //MARK: - Media -
+//    func uploadImageOnAPI(token: String, image: UIImage, name: String) -> String? {
+//        let headers = ["Authorization": token]
+//        let imageByteData = UIImagePNGRepresentation(image)!
+//        
+//            Alamofire
+//                .upload(multipartFormData: { multipartFormData in
+//                    multipartFormData.append(imageByteData,
+//                                             withName: "file",
+//                                             fileName: name + ".png",
+//                                             mimeType: "image/png")
+//                }, to: Constants.URL.mediaUrl,
+//                   method: .post,
+//                   headers: headers)
+//                { result in
+//                    switch result {
+//                    case .success(let uploadRequest, _, _):
+//                        return self.processUploadRequest(uploadRequest)
+//                    case .failure(let encodingError):
+//                        print(encodingError)
+//                    }
+//                }
+//            }
+//    
+//    
+//    func processUploadRequest(_ uploadRequest: UploadRequest) -> String? {
+//        //return Promise { seal in
+//            uploadRequest
+//                .responseDecodableObject(keyPath: "data") {
+//                    (response: DataResponse<Media>) in
+//                
+//                switch response.result {
+//                case .success(let media):
+//                    //seal.fulfill(media)
+//                    return media.id
+//                    print("DECODED: \(media)")
+//                case .failure(let error):
+//                    //seal.reject(error)
+//                    print("FAILURE: \(error)")
+//                }
+//            }
+//        }
+//    //}
+    
 }

@@ -14,6 +14,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
     //MARK: - Privates -
     private var showId: String!
     private var token: String!
+    private let refresher: UIRefreshControl = UIRefreshControl()
     private var showDetails: ShowDetails?
     private var episodesList: [Episode] = [] {
         didSet {
@@ -37,6 +38,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
         super.viewDidLoad()
         
         tableView.tableFooterView = UIView()
+        setRefresher()
         loadDetails()
     }
 
@@ -51,6 +53,23 @@ class ShowDetailsViewController: UIViewController, Progressable {
         self.showId = showId
     }
 
+    private func setRefresher() {
+        if #available(iOS 10.0, *) {
+            tableView.refreshControl = refresher
+        } else {
+            tableView.addSubview(refresher)
+        }
+        
+        refresher.tintColor = UIColor(rgb: 0xFF758C)
+        refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refresher.addTarget(self, action: #selector(refreshDetails(_:)), for: .valueChanged)
+    }
+    
+    @objc private func refreshDetails(_ sender: Any) {
+        loadDetails()
+        refresher.endRefreshing()
+    }
+    
     //MARK: - API functions -
     private func loadDetails() {
         showSpinner()

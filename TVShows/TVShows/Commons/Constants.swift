@@ -19,6 +19,7 @@ enum Constants {
         static let showsUrl: String = baseApiUrl + "/shows"
         static let episodesUrl: String = baseApiUrl + "/episodes"
         static let usersUrl: String = baseApiUrl + "/users"
+        static let mediaUrl: String = baseApiUrl + "/media"
     }
     
     enum KeychainEnum {

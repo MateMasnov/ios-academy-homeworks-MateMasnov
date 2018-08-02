@@ -11,6 +11,7 @@ import PromiseKit
 
 class CommentsViewController: UIViewController, Progressable {
     //MARK: - Privates -
+    private let refresher = UIRefreshControl()
     private var token: String!
     private var episodeId: String!
     private var commentsList: [Comments] = [] {
@@ -36,6 +37,7 @@ class CommentsViewController: UIViewController, Progressable {
         super.viewDidLoad()
 
         setupTextView()
+        setupRefresher()
         tableView.tableFooterView = UIView()
         loadComments()
     }
@@ -95,7 +97,23 @@ class CommentsViewController: UIViewController, Progressable {
         commentsTextView.layer.cornerRadius = 18
         commentsTextView.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         commentsTextView.layer.borderWidth = 0.5
-        //commentsTextView.clipsToBounds = true
+    }
+
+    private func setupRefresher() {
+        if #available(iOS 10.0, *) {
+            tableView.refreshControl = refresher
+        } else {
+            tableView.addSubview(refresher)
+        }
+        
+        refresher.tintColor = UIColor(rgb: 0xFF758C)
+        refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refresher.addTarget(self, action: #selector(refreshDetails(_:)), for: .valueChanged)
+    }
+    
+    @objc private func refreshDetails(_ sender: Any) {
+        loadComments()
+        refresher.endRefreshing()
     }
     
     //MARK: - Api functions -
@@ -122,11 +140,12 @@ class CommentsViewController: UIViewController, Progressable {
         ApiManager.addComment(parameters: parameters, token: token)
             .done { [weak self] (comment) in
                 self?.commentsList.append(comment)
-            }.catch { [weak self] (error) in
-                guard let `self` = self else { return }
-                
-                self.presentAlert(title: "Input error", message: "Invalid user input")
-            }.finally { [weak self] in
+                self?.commentsTextView.text = nil
+            }
+            .catch { [weak self] (error) in
+                self?.presentAlert(title: "Input error", message: "Invalid user input")
+            }
+            .finally { [weak self] in
                 self?.hideSpinner()
         }
     }
@@ -135,12 +154,10 @@ class CommentsViewController: UIViewController, Progressable {
         showSpinner()
         ApiManager.deleteComment(commentId: commentId, token: token)
             .done { [weak self] _ in
-                self?.tableView.deleteRows(at: [indexPath], with: .left)
                 self?.commentsList.remove(at: indexPath.row)
+//                self?.tableView.deleteRows(at: [indexPath], with: .left)
             }.catch { [weak self] (error) in
-                guard let `self` = self else { return }
-                
-                self.presentAlert(title: "Api error", message: "Something gone wrong")
+                self?.presentAlert(title: "Api error", message: "Something gone wrong")
             }.finally { [weak self] in
                 self?.hideSpinner()
         }
@@ -177,8 +194,6 @@ extension CommentsViewController: UITableViewDelegate {
             guard let `self` = self else { return }
             
             self.deleteComment(commentId: self.commentsList[indexPath.row].id, indexPath: indexPath)
-//            self.tableView.deleteRows(at: [indexPath], with: .left)
-//            self.commentsList.remove(at: indexPath.row)
         }
         
         deleteButton.backgroundColor = UIColor(rgb: 0xFF758C)
