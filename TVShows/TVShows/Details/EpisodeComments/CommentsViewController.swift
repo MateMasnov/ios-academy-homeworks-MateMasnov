@@ -18,9 +18,10 @@ class CommentsViewController: UIViewController, Progressable {
             tableView.reloadData()
         }
     }
+    
     //MARK: - Outlets -
+    @IBOutlet weak var commentsTextView: UITextView!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var commentTextField: UITextField!
     @IBOutlet weak var tableView: UITableView! {
         didSet {
             tableView.dataSource = self
@@ -34,6 +35,7 @@ class CommentsViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setupTextView()
         tableView.tableFooterView = UIView()
         loadComments()
     }
@@ -48,7 +50,7 @@ class CommentsViewController: UIViewController, Progressable {
         registerKeyboardNotifications()
         navigationController?.navigationBar.barTintColor = .white
         navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
-        navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -86,6 +88,17 @@ class CommentsViewController: UIViewController, Progressable {
                 object: nil)
     }
     
+    private func setupTextView() {
+        commentsTextView.text = "Add a comment..."
+        commentsTextView.textColor = UIColor.lightGray
+        commentsTextView.delegate = self
+        commentsTextView.layer.cornerRadius = 18
+        commentsTextView.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
+        commentsTextView.layer.borderWidth = 0.5
+        //commentsTextView.clipsToBounds = true
+    }
+    
+    //MARK: - Api functions -
     private func loadComments() {
         showSpinner()
         ApiManager.getAllComments(episodeId: episodeId, token: token)
@@ -101,9 +114,7 @@ class CommentsViewController: UIViewController, Progressable {
     
     private func postComment() {
         guard let parameters = getParameters() else {
-            presentAlertWithTextFieldAnimations(title: "Input error",
-                                                message: "Invalid user input",
-                                                textFields: [commentTextField])
+            presentAlert(title: "Input error", message: "Invalid user input")
             return
         }
         
@@ -114,18 +125,31 @@ class CommentsViewController: UIViewController, Progressable {
             }.catch { [weak self] (error) in
                 guard let `self` = self else { return }
                 
-                self.presentAlertWithTextFieldAnimations(title: "Api error",
-                                                    message: "Something went wrong",
-                                                    textFields: [(self.commentTextField)!])
+                self.presentAlert(title: "Input error", message: "Invalid user input")
             }.finally { [weak self] in
                 self?.hideSpinner()
         }
     }
     
-    func getParameters() -> [String: String]? {
+    private func deleteComment(commentId: String, indexPath: IndexPath) {
+        showSpinner()
+        ApiManager.deleteComment(commentId: commentId, token: token)
+            .done { [weak self] _ in
+                self?.tableView.deleteRows(at: [indexPath], with: .left)
+                self?.commentsList.remove(at: indexPath.row)
+            }.catch { [weak self] (error) in
+                guard let `self` = self else { return }
+                
+                self.presentAlert(title: "Api error", message: "Something gone wrong")
+            }.finally { [weak self] in
+                self?.hideSpinner()
+        }
+    }
+    
+    private func getParameters() -> [String: String]? {
         guard
             let text =
-                commentTextField.text,
+                commentsTextView.text,
                 !text.isEmpty
             else {
                 return nil
@@ -150,7 +174,11 @@ extension CommentsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         if commentsList.count <= 0 { return nil }
         let deleteButton = UITableViewRowAction(style: .default, title: "Delete") { [weak self] action, indexPath in
-            self?.commentsList.remove(at: indexPath.row)
+            guard let `self` = self else { return }
+            
+            self.deleteComment(commentId: self.commentsList[indexPath.row].id, indexPath: indexPath)
+//            self.tableView.deleteRows(at: [indexPath], with: .left)
+//            self.commentsList.remove(at: indexPath.row)
         }
         
         deleteButton.backgroundColor = UIColor(rgb: 0xFF758C)
@@ -166,6 +194,10 @@ extension CommentsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if commentsList.count == 0 {
+            return 1
+        }
+        
         return commentsList.count
     }
     
@@ -186,6 +218,23 @@ extension CommentsViewController: UITableViewDataSource {
             cell.configure(with: commentsList[indexPath.row])
             
             return cell
+        }
+    }
+}
+
+extension CommentsViewController: UITextViewDelegate {
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if commentsTextView.textColor == UIColor.lightGray {
+            commentsTextView.text = nil
+            commentsTextView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if commentsTextView.text.isEmpty {
+            commentsTextView.text = "Add a comment..."
+            commentsTextView.textColor = UIColor.lightGray
         }
     }
 }

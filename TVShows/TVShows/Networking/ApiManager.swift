@@ -238,4 +238,29 @@ class ApiManager {
             }
         }
     }
+    
+    static func deleteComment(commentId: String, token: String) -> Promise<String> {
+        let headers = ["Authorization": token]
+        
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request(
+                    Constants.URL.baseApiUrl + Constants.URL.baseCommentsUrl + "/\(commentId)",
+                    method: .delete,
+                    encoding: JSONEncoding.default,
+                    headers: headers)
+                .validate()
+                .responseDecodableObject() { (response: DataResponse<String>) in
+                
+                    switch response.result {
+                    case .success(let result):
+                        seal.fulfill(result)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+                }
+        }
+    }
 }

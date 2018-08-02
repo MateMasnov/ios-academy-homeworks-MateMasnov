@@ -19,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hEt-QJ-Q1R">
-                                <rect key="frame" x="0.0" y="20" width="375" height="571"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="557"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="CommentsEmptyStateTableViewCell" rowHeight="400" id="lu9-zz-ZxJ" customClass="CommentsEmptyStateTableViewCell" customModule="TVShows" customModuleProvider="target">
@@ -32,7 +32,7 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Tk0-YJ-KjY">
                                                     <rect key="frame" x="20" y="20" width="335" height="359.5"/>
                                                     <subviews>
-                                                        <imageView userInteractionEnabled="NO" contentMode="bottom" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-placehoder-comments" translatesAutoresizingMaskIntoConstraints="NO" id="BNv-dS-xRs">
+                                                        <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-placehoder-comments" translatesAutoresizingMaskIntoConstraints="NO" id="BNv-dS-xRs">
                                                             <rect key="frame" x="0.0" y="0.0" width="335" height="200"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="200" id="jY4-cB-STk"/>
@@ -105,17 +105,17 @@
                                 </prototypes>
                             </tableView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ST3-0W-L7s">
-                                <rect key="frame" x="20" y="611" width="335" height="36"/>
+                                <rect key="frame" x="20" y="597" width="335" height="50"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Add a comment..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="T0I-hM-YlG">
-                                        <rect key="frame" x="0.0" y="0.0" width="274" height="36"/>
-                                        <nil key="textColor"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="  Add a comment..." translatesAutoresizingMaskIntoConstraints="NO" id="ZZO-IS-7wX">
+                                        <rect key="frame" x="0.0" y="0.0" width="240" height="50"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IR8-gf-LPv">
-                                        <rect key="frame" x="294" y="0.0" width="41" height="36"/>
-                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                                        <rect key="frame" x="260" y="0.0" width="75" height="50"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <state key="normal" title="Post">
                                             <color key="titleColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
                                         </state>
@@ -124,6 +124,12 @@
                                         </connections>
                                     </button>
                                 </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="ZZO-IS-7wX" secondAttribute="bottom" id="1mP-rD-7EQ"/>
+                                    <constraint firstItem="ZZO-IS-7wX" firstAttribute="top" secondItem="ST3-0W-L7s" secondAttribute="top" id="7Px-0r-StV"/>
+                                    <constraint firstItem="IR8-gf-LPv" firstAttribute="leading" secondItem="ZZO-IS-7wX" secondAttribute="trailing" constant="20" id="NGK-4q-mBn"/>
+                                    <constraint firstItem="ZZO-IS-7wX" firstAttribute="leading" secondItem="ST3-0W-L7s" secondAttribute="leading" id="X7A-Dt-GKx"/>
+                                </constraints>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="644-9n-MXQ">
                                 <rect key="frame" x="10" y="60" width="40" height="40"/>
@@ -153,7 +159,7 @@
                     </view>
                     <connections>
                         <outlet property="bottomConstraint" destination="6aI-xZ-Qgc" id="aqI-fo-qMy"/>
-                        <outlet property="commentTextField" destination="T0I-hM-YlG" id="eeO-6E-XFE"/>
+                        <outlet property="commentsTextView" destination="ZZO-IS-7wX" id="3uH-Cd-cvr"/>
                         <outlet property="tableView" destination="hEt-QJ-Q1R" id="vw4-S4-Ejc"/>
                     </connections>
                 </viewController>
