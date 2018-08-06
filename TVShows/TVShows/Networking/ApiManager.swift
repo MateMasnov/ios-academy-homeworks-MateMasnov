@@ -10,6 +10,7 @@ import Foundation
 import CodableAlamofire
 import Alamofire
 import PromiseKit
+import CoreMedia
 
 class ApiManager {
     //MARK: - Login calls -
@@ -161,4 +162,155 @@ class ApiManager {
             }
         }
     }
+    
+    static func getEpisodeDetailsAPICall(episodeId: String, token: String) -> Promise<Episode> {
+        let headers = ["Authorization": token]
+
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request(Constants.URL.episodesUrl + "/\(episodeId)",
+                         method: .get,
+                         encoding: JSONEncoding.default,
+                         headers: headers)
+                .validate()
+                .responseDecodableObject(keyPath: "data") { (response:
+                    DataResponse<Episode>) in
+                    
+                    switch response.result {
+                    case .success(let episode):
+                        seal.fulfill(episode)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    //MARK: - Comments calls -
+    static func getAllComments(episodeId: String, token: String) -> Promise<[Comments]> {
+        let headers = ["Authorization": token]
+        
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request(Constants.URL.episodesUrl + "/\(episodeId)" + Constants.URL.baseCommentsUrl,
+                    method: .get,
+                    encoding: JSONEncoding.default,
+                    headers: headers)
+                .validate()
+                .responseDecodableObject(keyPath: "data") { (response:
+                    DataResponse<[Comments]>) in
+                    
+                    switch response.result {
+                    case .success(let comments):
+                        seal.fulfill(comments)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    static func addComment(parameters: [String: String], token: String) -> Promise<Comments> {
+        let headers = ["Authorization": token]
+
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request(Constants.URL.baseApiUrl + Constants.URL.baseCommentsUrl,
+                         method: .post,
+                         parameters: parameters,
+                         encoding: JSONEncoding.default,
+                         headers: headers)
+                .validate()
+                .responseDecodableObject(keyPath: "data") { (response:
+                    DataResponse<Comments>) in
+                    
+                    switch response.result {
+                    case .success(let comments):
+                        seal.fulfill(comments)
+                    case .failure(let error):
+                        seal.reject(error)
+                    }
+            }
+        }
+    }
+    
+    static func deleteComment(commentId: String, token: String) -> Promise<Void> {
+        let headers = ["Authorization": token]
+        
+        return Promise {
+            seal in
+            
+            Alamofire
+                .request(
+                    Constants.URL.baseApiUrl + Constants.URL.baseCommentsUrl + "/\(commentId)",
+                    method: .delete,
+                    encoding: JSONEncoding.default,
+                    headers: headers)
+                .validate()
+                .response(completionHandler: { (response) in
+                    guard
+                        let status: Int = response.response?.statusCode,
+                        status >= 200, status <= 400
+                    else {
+                        guard let error = response.error else { return }
+                        seal.reject(error)
+                        return
+                    }
+                    
+                    seal.fulfill(())
+                    
+                })
+        }
+    }
+    
+    //MARK: - Media -
+//    func uploadImageOnAPI(token: String, image: UIImage, name: String) -> String? {
+//        let headers = ["Authorization": token]
+//        let imageByteData = UIImagePNGRepresentation(image)!
+//        
+//            Alamofire
+//                .upload(multipartFormData: { multipartFormData in
+//                    multipartFormData.append(imageByteData,
+//                                             withName: "file",
+//                                             fileName: name + ".png",
+//                                             mimeType: "image/png")
+//                }, to: Constants.URL.mediaUrl,
+//                   method: .post,
+//                   headers: headers)
+//                { result in
+//                    switch result {
+//                    case .success(let uploadRequest, _, _):
+//                        return self.processUploadRequest(uploadRequest)
+//                    case .failure(let encodingError):
+//                        print(encodingError)
+//                    }
+//                }
+//            }
+//    
+//    
+//    func processUploadRequest(_ uploadRequest: UploadRequest) -> String? {
+//        //return Promise { seal in
+//            uploadRequest
+//                .responseDecodableObject(keyPath: "data") {
+//                    (response: DataResponse<Media>) in
+//                
+//                switch response.result {
+//                case .success(let media):
+//                    //seal.fulfill(media)
+//                    return media.id
+//                    print("DECODED: \(media)")
+//                case .failure(let error):
+//                    //seal.reject(error)
+//                    print("FAILURE: \(error)")
+//                }
+//            }
+//        }
+//    //}
+    
 }

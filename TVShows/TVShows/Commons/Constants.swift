@@ -14,10 +14,12 @@ enum Constants {
     enum URL {
         static let baseDomainUrl: String = "https://api.infinum.academy"
         static let baseUrl: String = "/api"
+        static let baseCommentsUrl: String = "/comments"
         static let baseApiUrl: String = baseDomainUrl + baseUrl
         static let showsUrl: String = baseApiUrl + "/shows"
         static let episodesUrl: String = baseApiUrl + "/episodes"
         static let usersUrl: String = baseApiUrl + "/users"
+        static let mediaUrl: String = baseApiUrl + "/media"
     }
     
     enum KeychainEnum {

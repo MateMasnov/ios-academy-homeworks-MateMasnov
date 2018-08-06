@@ -8,6 +8,7 @@
 
 import UIKit
 import PromiseKit
+import CodableAlamofire
 
 protocol AddEpisodeControllerDelegate: class {
     func addedEpisode(episode: Episode)
@@ -16,11 +17,16 @@ protocol AddEpisodeControllerDelegate: class {
 class AddEpisodeViewController: UIViewController, Progressable {
     
     //MARK: - Privates -
+    private let picker = UIImagePickerController()
+    private var imageToUpload: UIImage?
     private var showId: String!
     private var token: String!
+    private var mediaId: String?
+    private var doneLoading: Bool = false
     weak var delegate: AddEpisodeControllerDelegate?
 
     //MARK: - Outlets -
+    @IBOutlet weak var uploadImageView: UIImageView!
     @IBOutlet weak var episodeTitleField: UITextField!
     @IBOutlet weak var seasonNumberField: UITextField!
     @IBOutlet weak var episodeNumberField: UITextField!
@@ -32,6 +38,7 @@ class AddEpisodeViewController: UIViewController, Progressable {
         super.viewDidLoad()
         
         setNavigationItems()
+        picker.delegate = self
         episodeTitleField.delegate = self
         seasonNumberField.delegate = self
         episodeDescriptionField.delegate = self
@@ -99,25 +106,47 @@ class AddEpisodeViewController: UIViewController, Progressable {
     
     //MARK: - Bar button actions -
     @objc private func didSelectAddShow() {
-        guard let parameters = getParameters() else {
-            let textFields: [UITextField] = [
-                episodeTitleField,
-                episodeDescriptionField,
-                episodeNumberField,
-                seasonNumberField
-            ]
+        let textFields: [UITextField] = [
+            episodeTitleField,
+            episodeDescriptionField,
+            episodeNumberField,
+            seasonNumberField
+        ]
         
+        guard let imageToUpload = imageToUpload else {
             handleError(title: "Input error",
                         message: "Invalid text input",
                         textFields: textFields)
             return
+            
         }
         
-        addEpisode(parameters: parameters)
+        if mediaId == nil {
+            uploadImageOnAPI(token: token, image: imageToUpload)
+        } else {
+            guard let parameters = getParameters() else {
+                handleError(title: "Input error",
+                            message: "Invalid text input",
+                            textFields: textFields)
+                return
+                
+            }
+            
+            addEpisode(parameters: parameters)
+        }
+        
     }
     
     @objc private func didSelectCancelShow() {
         dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func uploadPhotoAction(_ sender: Any) {
+        picker.allowsEditing = false
+        picker.sourceType = .photoLibrary
+        picker.mediaTypes = UIImagePickerController.availableMediaTypes(for: .photoLibrary)!
+        picker.modalPresentationStyle = .popover
+        present(picker, animated: true, completion: nil)
     }
     
     //MARK: - Strategic functions -
@@ -132,7 +161,7 @@ class AddEpisodeViewController: UIViewController, Progressable {
             return
         }
         
-        self.presentAlertWithTextFieldAnimations(title: title, message: message, textFields: textFields)
+        presentAlertWithTextFieldAnimations(title: title, message: message, textFields: textFields)
     }
     
     private func getParameters() -> [String: String]? {
@@ -149,8 +178,10 @@ class AddEpisodeViewController: UIViewController, Progressable {
                 return nil
         }
         
+        guard let mediaId = mediaId else { return nil }
+        
         return [ "showId": showId,
-                 "mediaId": "",
+                 "mediaId": mediaId,
                  "title": title,
                  "description": description,
                  "episodeNumber": episode,
@@ -188,9 +219,72 @@ class AddEpisodeViewController: UIViewController, Progressable {
                 self?.hideSpinner()
         }
     }
+    
+    func uploadImageOnAPI(token: String, image: UIImage) {
+        let headers = ["Authorization": token]
+        let imageByteData = UIImagePNGRepresentation(image)!
+        showSpinner()
+        Alamofire
+            .upload(multipartFormData: { multipartFormData in
+                multipartFormData.append(imageByteData,
+                                         withName: "file",
+                                         fileName: "image.png",
+                                         mimeType: "image/png")
+            }, to: Constants.URL.mediaUrl,
+               method: .post,
+               headers: headers)
+            { [weak self] result in
+                guard let `self` = self else { return }
+                switch result {
+                case .success(let uploadRequest, _, _):
+                    self.processUploadRequest(uploadRequest)
+                case .failure(let encodingError):
+                    self.hideSpinner()
+                    self.presentAlert(title: "Image error", message: "Please try again")
+                    self.uploadImageView.image = UIImage(named: "photo-logo")!
+                    print(encodingError)
+                }
+        }
+    }
+    
+    func processUploadRequest(_ uploadRequest: UploadRequest) {
+        uploadRequest
+            .responseDecodableObject(keyPath: "data") { [weak self]
+                (response: DataResponse<Media>) in
+                guard let `self` = self else { return }
+                
+                self.hideSpinner()
+                switch response.result {
+                case .success(let media):
+                    self.mediaId = media.id
+                    print("DECODED: \(media)")
+                    
+                    guard let parameters = self.getParameters() else { return }
+                    self.addEpisode(parameters: parameters)
+                case .failure(let error):
+                    print("FAILURE: \(error)")
+                }
+            }
+    }
 }
 
 //MARK: - Extensions -
+extension AddEpisodeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    @objc func imagePickerController(_ picker: UIImagePickerController,
+                                     didFinishPickingMediaWithInfo info: [String : AnyObject])
+    {
+        var chosenImage = UIImage()
+        chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+        uploadImageView.contentMode = .scaleAspectFit
+        uploadImageView.image = chosenImage
+        imageToUpload = chosenImage
+        picker.dismiss(animated:true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+}
 extension AddEpisodeViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

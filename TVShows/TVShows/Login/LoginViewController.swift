@@ -114,7 +114,7 @@ class LoginViewController: UIViewController, Progressable {
             return
         }
         
-        self.presentAlertWithTextFieldAnimations(title: title,
+        presentAlertWithTextFieldAnimations(title: title,
                                                  message: message,
                                                  textFields: textFields)
     }

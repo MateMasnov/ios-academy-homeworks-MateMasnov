@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 extension UIViewController {
-    func adjustKeyboard(_ isKeyboardShown: Bool, notification: Notification, scrollView: UIScrollView) {
+    func getKeyboardHeight(notification: Notification) -> CGFloat {
         let userInfo = notification.userInfo ?? [:]
-        let keyboardFrame = (userInfo[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue
+        let keyboardFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         
         let keyboardVisibleHeight: CGFloat = keyboardFrame.height
         var height = keyboardVisibleHeight
@@ -20,6 +20,12 @@ extension UIViewController {
         if #available(iOS 11.0, *), keyboardVisibleHeight > 0 {
             height = height - view.safeAreaInsets.bottom
         }
+        
+        return height
+    }
+    
+    func adjustKeyboard(_ isKeyboardShown: Bool, notification: Notification, scrollView: UIScrollView) {
+        let height = getKeyboardHeight(notification: notification)
         
         let insetsShow = UIEdgeInsets(
             top: 0,
