@@ -134,8 +134,10 @@ class LoginViewController: UIViewController, Progressable {
     //MARK: - Api functions -
     private func register(parameters: [String: String]) {
         showSpinner()
-        ApiManager.registerAPICall(parameters: parameters)
-            .done { [weak self] (user) in
+        ApiManager.makeAPICall(url: Constants.URL.usersUrl,
+                               method: .post,
+                               parameters: parameters)
+            .done { [weak self] (user: User) in
                 guard let `self` = self else { return }
                 
                 self.user = user
@@ -156,8 +158,10 @@ class LoginViewController: UIViewController, Progressable {
     
     private func login(parameters: [String: String]) {
         showSpinner()
-        ApiManager.loginAPICall(parameters: parameters)
-            .done { [weak self] (loginData) in
+        ApiManager.makeAPICall(url: "\(Constants.URL.usersUrl)/sessions",
+                               method: .post,
+                               parameters: parameters)
+            .done { [weak self] (loginData: LoginData) in
                 guard let `self` = self else { return }
                 
                 if self.checkmarkButton.isSelected {

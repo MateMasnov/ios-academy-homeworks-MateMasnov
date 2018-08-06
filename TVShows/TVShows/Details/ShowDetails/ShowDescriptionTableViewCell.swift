@@ -22,15 +22,6 @@ class ShowDescriptionTableViewCell: UITableViewCell {
     @IBOutlet weak var episodesLabel: UILabel!
     
     //Mark: - Functions -
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-
     override func prepareForReuse() {
         super.prepareForReuse()
         

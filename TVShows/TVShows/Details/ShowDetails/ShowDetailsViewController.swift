@@ -30,6 +30,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
             tableView.estimatedRowHeight = 100
             tableView.separatorStyle = .none
             tableView.contentInset.bottom = 80
+            tableView.tableFooterView = UIView()
         }
     }
     
@@ -37,7 +38,6 @@ class ShowDetailsViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.tableFooterView = UIView()
         setRefresher()
         loadDetails()
     }
@@ -72,13 +72,16 @@ class ShowDetailsViewController: UIViewController, Progressable {
     
     //MARK: - API functions -
     private func loadDetails() {
+        let headers: [String: String] = ["Authorization": token]
+        let showId: String = self.showId
+        
         showSpinner()
-        ApiManager.getShowDetailsAPICall(token: token, showId: showId)
-            .then({ (showDetails) -> Promise<[Episode]> in
-                self.showDetails = showDetails
-                return ApiManager.getAllEpisodesAPICall(token: self.token, showId: self.showId)
+        ApiManager.makeAPICall(url: "\(Constants.URL.showsUrl)/\(showId)", headers: headers)
+            .then({ [weak self] (showDetails: ShowDetails) -> Promise<[Episode]> in
+                self?.showDetails = showDetails
+                return ApiManager.makeAPICall(url: "\(Constants.URL.showsUrl)/\(showId)/episodes", headers: headers)
             })
-            .done { [weak self] (episodes) in
+            .done { [weak self] (episodes: [Episode]) in
                 self?.episodesList = episodes
             }
             .catch { [weak self] (error) in

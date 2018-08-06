@@ -26,13 +26,13 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
             tableView.delegate = self
             tableView.estimatedRowHeight = 100
             tableView.separatorStyle = .none
+            tableView.tableFooterView = UIView()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.tableFooterView = UIView()
         loadEpisodeDetails()
     }
     
@@ -48,9 +48,11 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
     }
     
     private func loadEpisodeDetails() {
+        guard let episodeId = episodeId else { return }
+
         showSpinner()
-        ApiManager.getEpisodeDetailsAPICall(episodeId: episodeId, token: token)
-            .done { [weak self] (episode) in
+        ApiManager.makeAPICall(url: "\(Constants.URL.episodesUrl)/\(episodeId)", headers: ["Authorization": token])
+            .done { [weak self] (episode: Episode) in
                 self?.episodeDetails = episode
             }
             .catch { [weak self] (error) in

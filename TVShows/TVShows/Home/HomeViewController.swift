@@ -95,8 +95,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
     //MARK: - API functions -
     private func loadShows() {
         showSpinner()
-        ApiManager.getShowsAPICall(token: token)
-            .done { [weak self] (responseArray) in
+        ApiManager.makeAPICall(url: Constants.URL.showsUrl, headers: ["Authorization": token])
+            .done { [weak self] (responseArray: [Show]) in
                 guard let `self` = self else { return }
                 
                 self.shows = responseArray

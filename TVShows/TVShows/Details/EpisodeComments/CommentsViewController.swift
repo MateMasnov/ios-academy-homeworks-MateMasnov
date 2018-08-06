@@ -10,6 +10,7 @@ import UIKit
 import PromiseKit
 
 class CommentsViewController: UIViewController, Progressable {
+    
     //MARK: - Privates -
     private let refresher = UIRefreshControl()
     private var token: String!
@@ -29,6 +30,7 @@ class CommentsViewController: UIViewController, Progressable {
             tableView.delegate = self
             tableView.estimatedRowHeight = 100
             tableView.separatorStyle = .none
+            tableView.tableFooterView = UIView()
         }
     }
     
@@ -38,7 +40,6 @@ class CommentsViewController: UIViewController, Progressable {
 
         setupTextView()
         setupRefresher()
-        tableView.tableFooterView = UIView()
         loadComments()
     }
 
@@ -63,13 +64,21 @@ class CommentsViewController: UIViewController, Progressable {
     }
     
     @objc private func keyboardWillShow(_ notification: Notification) {
-        bottomConstraint.constant += CGFloat(self.getKeyboardHeight(notification: notification))
-        view.layoutIfNeeded()
+        let height: CGFloat = getKeyboardHeight(notification: notification)
+        
+        bottomConstraint.constant += CGFloat(height)
+        view.setNeedsLayout()
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
     }
     
     @objc private func keyboardWillHide(_ notification: Notification) {
         bottomConstraint.constant = CGFloat(20)
-        view.layoutIfNeeded()
+        view.setNeedsLayout()
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
     }
     
     private func registerKeyboardNotifications() {
@@ -118,9 +127,12 @@ class CommentsViewController: UIViewController, Progressable {
     
     //MARK: - Api functions -
     private func loadComments() {
+        guard let episodeId = episodeId else { return }
+        let url: String = Constants.URL.episodesUrl + "/\(episodeId)" + Constants.URL.baseCommentsUrl
+        
         showSpinner()
-        ApiManager.getAllComments(episodeId: episodeId, token: token)
-            .done { [weak self] (comments) in
+        ApiManager.makeAPICall(url: url, headers: ["Authorization": token])
+            .done { [weak self] (comments: [Comments]) in
                 self?.commentsList = comments
             }
             .catch { [weak self] (error) in
@@ -136,9 +148,10 @@ class CommentsViewController: UIViewController, Progressable {
             return
         }
         
+        let url: String = Constants.URL.baseApiUrl + Constants.URL.baseCommentsUrl
         showSpinner()
-        ApiManager.addComment(parameters: parameters, token: token)
-            .done { [weak self] (comment) in
+        ApiManager.makeAPICall(url: url, method: .post, headers: ["Authorization": token], parameters: parameters)
+            .done { [weak self] (comment: Comments) in
                 self?.commentsList.append(comment)
                 self?.commentsTextView.text = nil
             }
@@ -155,7 +168,6 @@ class CommentsViewController: UIViewController, Progressable {
         ApiManager.deleteComment(commentId: commentId, token: token)
             .done { [weak self] _ in
                 self?.commentsList.remove(at: indexPath.row)
-//                self?.tableView.deleteRows(at: [indexPath], with: .left)
             }.catch { [weak self] (error) in
                 self?.presentAlert(title: "Api error", message: "Something gone wrong")
             }.finally { [weak self] in
@@ -165,9 +177,7 @@ class CommentsViewController: UIViewController, Progressable {
     
     private func getParameters() -> [String: String]? {
         guard
-            let text =
-                commentsTextView.text,
-                !text.isEmpty
+            let text = commentsTextView.text, !text.isEmpty
             else {
                 return nil
         }
