@@ -13,7 +13,6 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
 
     
     private var episodeId: String!
-    private var token: String!
     private var episodeDetails: Episode? {
         didSet {
             tableView.reloadData()
@@ -42,8 +41,7 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    func setup(episodeId: String, token: String) {
-        self.token = token
+    func setEpisodeId(episodeId: String) {
         self.episodeId = episodeId
     }
     
@@ -51,7 +49,7 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
         guard let episodeId = episodeId else { return }
 
         showSpinner()
-        ApiManager.makeAPICall(url: "\(Constants.URL.episodesUrl)/\(episodeId)", headers: ["Authorization": token])
+        ApiManager.makeAPICall(url: "\(Constants.URL.episodesUrl)/\(episodeId)")
             .done { [weak self] (episode: Episode) in
                 self?.episodeDetails = episode
             }
@@ -75,7 +73,7 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
         
         guard let episodeDetails = episodeDetails else { return }
         
-        commentsViewController.setup(episodeId: episodeDetails.id, token: token)
+        commentsViewController.setEpisodeId(episodeId: episodeDetails.id)
         commentsViewController.title = "Comments"
         
         navigationController?.show(commentsViewController, sender: self)

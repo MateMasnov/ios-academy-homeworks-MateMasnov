@@ -21,8 +21,6 @@ class LoginViewController: UIViewController, Progressable {
     @IBOutlet weak var scrollView: UIScrollView!
     
     //MARK: - Private -
-    private var user: User?
-    private var loginData: LoginData?
     
     //MARK: - Controller functions -
     override func viewDidLoad() {
@@ -119,13 +117,12 @@ class LoginViewController: UIViewController, Progressable {
                                                  textFields: textFields)
     }
     
-    private func navigateToHomeViewController(loginData: LoginData) {
+    private func navigateToHomeViewController() {
         let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController =
             homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
                 as! HomeViewController
         
-        homeViewController.setToken(token: loginData.token)
         homeViewController.title = "TV Shows"
         
         navigationController?.setViewControllers([homeViewController], animated: true)
@@ -138,10 +135,7 @@ class LoginViewController: UIViewController, Progressable {
                                method: .post,
                                parameters: parameters)
             .done { [weak self] (user: User) in
-                guard let `self` = self else { return }
-                
-                self.user = user
-                self.login(parameters: parameters)
+                self?.login(parameters: parameters)
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
@@ -170,8 +164,9 @@ class LoginViewController: UIViewController, Progressable {
                     keychain["password"] = parameters["password"]
                 }
                 
-                self.loginData = loginData
-                self.navigateToHomeViewController(loginData: loginData)
+                ApiManager.initializeSession(token: loginData.token)
+                
+                self.navigateToHomeViewController()
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }

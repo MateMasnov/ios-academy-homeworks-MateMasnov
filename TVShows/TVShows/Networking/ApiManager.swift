@@ -13,18 +13,22 @@ import PromiseKit
 
 class ApiManager {
 
-    static func deleteComment(commentId: String, token: String) -> Promise<Void> {
-        let headers = ["Authorization": token]
+    static private var sessionManager: SessionManager = SessionManager.default
+    
+    static func initializeSession(token: String) {
+        sessionManager.adapter = TokenAdapter(token: token)
+    }
+    
+    static func deleteComment(commentId: String) -> Promise<Void> {
         
         return Promise {
             seal in
             
-            Alamofire
+            sessionManager
                 .request(
                     Constants.URL.baseApiUrl + Constants.URL.baseCommentsUrl + "/\(commentId)",
                     method: .delete,
-                    encoding: JSONEncoding.default,
-                    headers: headers)
+                    encoding: JSONEncoding.default)
                 .validate()
                 .response(completionHandler: { (response) in
                     guard
@@ -43,18 +47,16 @@ class ApiManager {
     
     static func makeAPICall<T: Decodable>(url: URLConvertible,
                                           method: HTTPMethod = HTTPMethod.get,
-                                          headers: [String: String] = [:],
                                           parameters: [String: String] = [:]) -> Promise<T> {
         
         return Promise {
             seal in
             
-            Alamofire
+            sessionManager
                 .request(url,
                          method: method,
                          parameters: parameters,
-                         encoding: JSONEncoding.default,
-                         headers: headers)
+                         encoding: JSONEncoding.default)
                 .validate()
                 .responseDecodableObject(keyPath: "data") { (dataResponse:
                     DataResponse<T>) in
@@ -69,22 +71,20 @@ class ApiManager {
         }
     }
     
-    static func uploadImageOnAPI(token: String, image: UIImage, name: String) -> Promise<Media> {
-        let headers = ["Authorization": token]
+    static func uploadImageOnAPI(image: UIImage, name: String) -> Promise<Media> {
         let imageByteData = UIImagePNGRepresentation(image)!
         
         return Promise {
             seal in
             
-            Alamofire
+            sessionManager
                 .upload(multipartFormData: { multipartFormData in
                     multipartFormData.append(imageByteData,
                                              withName: "file",
                                              fileName: name + ".png",
                                              mimeType: "image/png")
                 }, to: Constants.URL.mediaUrl,
-                   method: .post,
-                   headers: headers)
+                   method: .post)
                 { result in
                     switch result {
                     case .success(let uploadRequest, _, _):

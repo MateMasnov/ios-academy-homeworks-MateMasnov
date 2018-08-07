@@ -13,7 +13,6 @@ class ShowDetailsViewController: UIViewController, Progressable {
 
     //MARK: - Privates -
     private var showId: String!
-    private var token: String!
     private let refresher: UIRefreshControl = UIRefreshControl()
     private var showDetails: ShowDetails?
     private var episodesList: [Episode] = [] {
@@ -48,8 +47,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    func setup(token: String, showId: String) {
-        self.token = token
+    func setShowId(showId: String) {
         self.showId = showId
     }
 
@@ -72,14 +70,13 @@ class ShowDetailsViewController: UIViewController, Progressable {
     
     //MARK: - API functions -
     private func loadDetails() {
-        let headers: [String: String] = ["Authorization": token]
         let showId: String = self.showId
         
         showSpinner()
-        ApiManager.makeAPICall(url: "\(Constants.URL.showsUrl)/\(showId)", headers: headers)
+        ApiManager.makeAPICall(url: "\(Constants.URL.showsUrl)/\(showId)")
             .then({ [weak self] (showDetails: ShowDetails) -> Promise<[Episode]> in
                 self?.showDetails = showDetails
-                return ApiManager.makeAPICall(url: "\(Constants.URL.showsUrl)/\(showId)/episodes", headers: headers)
+                return ApiManager.makeAPICall(url: "\(Constants.URL.showsUrl)/\(showId)/episodes")
             })
             .done { [weak self] (episodes: [Episode]) in
                 self?.episodesList = episodes
@@ -108,7 +105,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
         
         addEpisodeViewController.title = "Add episode"
         addEpisodeViewController.delegate = self
-        addEpisodeViewController.setup(token: token, showId: showId)
+        addEpisodeViewController.setShowId(showId: showId)
         
         present(navigationController, animated: true, completion: nil)
     }
@@ -133,7 +130,7 @@ extension ShowDetailsViewController: UITableViewDelegate {
             episodeStoryboard.instantiateViewController(withIdentifier: "EpisodeDetailsViewController")
                 as! EpisodeDetailsViewController
         
-        episodeDetailsViewController.setup(episodeId: episodesList[indexPath.row - 2].id, token: token)
+        episodeDetailsViewController.setEpisodeId(episodeId: episodesList[indexPath.row - 2].id)
         
         navigationController?.show(episodeDetailsViewController, sender: self)
         

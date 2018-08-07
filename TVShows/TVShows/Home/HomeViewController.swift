@@ -13,7 +13,6 @@ import KeychainAccess
 class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, Progressable {
 
     //MARK: - Privates -
-    private var token: String!
     private var isListView: Bool = true
     private var toggleButton: UIBarButtonItem?
     private var shows: [Show] = [] {
@@ -45,10 +44,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
         navigationController?.navigationBar.barTintColor = .white
         navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
         navigationController?.setNavigationBarHidden(false, animated: true)
-    }
-
-    func setToken(token: String) {
-        self.token = token
     }
     
     private func setNavigationItems() {
@@ -96,7 +91,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
     private func loadShows() {
         showSpinner()
         ApiManager
-            .makeAPICall(url: Constants.URL.showsUrl, headers: ["Authorization": token])
+            .makeAPICall(url: Constants.URL.showsUrl)
             .done { [weak self] (responseArray: [Show]) in
                 guard let `self` = self else { return }
                 
@@ -122,7 +117,7 @@ extension HomeViewController: UICollectionViewDelegate {
             detailsStoryboard.instantiateViewController(withIdentifier: "ShowDetailsViewController")
                 as! ShowDetailsViewController
         
-        showDetailsViewController.setup(token: token, showId: shows[indexPath.row].id)
+        showDetailsViewController.setShowId(showId: shows[indexPath.row].id)
         
         navigationController?.show(showDetailsViewController, sender: self)
     }

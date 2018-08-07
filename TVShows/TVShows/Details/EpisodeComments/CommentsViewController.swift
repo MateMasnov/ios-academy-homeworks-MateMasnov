@@ -13,7 +13,6 @@ class CommentsViewController: UIViewController, Progressable {
     
     //MARK: - Privates -
     private let refresher = UIRefreshControl()
-    private var token: String!
     private var episodeId: String!
     private var commentsList: [Comments] = [] {
         didSet {
@@ -44,9 +43,8 @@ class CommentsViewController: UIViewController, Progressable {
         loadComments()
     }
 
-    func setup(episodeId: String, token: String) {
+    func setEpisodeId(episodeId: String) {
         self.episodeId = episodeId
-        self.token = token
     }
     
     //MARK: - Notification functions -
@@ -132,7 +130,7 @@ class CommentsViewController: UIViewController, Progressable {
         let url: String = Constants.URL.episodesUrl + "/\(episodeId)" + Constants.URL.baseCommentsUrl
         
         showSpinner()
-        ApiManager.makeAPICall(url: url, headers: ["Authorization": token])
+        ApiManager.makeAPICall(url: url)
             .done { [weak self] (comments: [Comments]) in
                 self?.commentsList = comments
             }
@@ -151,7 +149,7 @@ class CommentsViewController: UIViewController, Progressable {
         
         let url: String = Constants.URL.baseApiUrl + Constants.URL.baseCommentsUrl
         showSpinner()
-        ApiManager.makeAPICall(url: url, method: .post, headers: ["Authorization": token], parameters: parameters)
+        ApiManager.makeAPICall(url: url, method: .post, parameters: parameters)
             .done { [weak self] (comment: Comments) in
                 self?.commentsList.append(comment)
                 self?.commentsTextView.text = nil
@@ -166,7 +164,7 @@ class CommentsViewController: UIViewController, Progressable {
     
     private func deleteComment(commentId: String, indexPath: IndexPath) {
         showSpinner()
-        ApiManager.deleteComment(commentId: commentId, token: token)
+        ApiManager.deleteComment(commentId: commentId)
             .done { [weak self] _ in
                 self?.commentsList.remove(at: indexPath.row)
             }.catch { [weak self] (error) in

@@ -19,7 +19,6 @@ class AddEpisodeViewController: UIViewController, Progressable {
     private var picker: UIImagePickerController?
     private var imageToUpload: UIImage?
     private var showId: String!
-    private var token: String!
     private var mediaId: String?
     weak var delegate: AddEpisodeControllerDelegate?
 
@@ -69,8 +68,7 @@ class AddEpisodeViewController: UIViewController, Progressable {
                                                             action: #selector(didSelectAddShow))
     }
     
-    func setup(token: String, showId: String) {
-        self.token = token
+    func setShowId(showId: String) {
         self.showId = showId
     }
     
@@ -110,7 +108,7 @@ class AddEpisodeViewController: UIViewController, Progressable {
             return
         }
         
-        uploadImage(token: token, image: imageToUpload)
+        uploadImage(image: imageToUpload)
     }
     
     @objc private func didSelectCancelShow() {
@@ -184,13 +182,11 @@ class AddEpisodeViewController: UIViewController, Progressable {
             
             return
         }
-        let headers: [String: String] = ["Authorization": token]
         
         showSpinner()
         ApiManager
             .makeAPICall(url: Constants.URL.episodesUrl,
                                method: .post,
-                               headers: headers,
                                parameters: parameters)
             .done { [weak self] (result: Episode) in
                 guard let `self` = self else { return }
@@ -211,10 +207,10 @@ class AddEpisodeViewController: UIViewController, Progressable {
         }
     }
     
-    private func uploadImage(token: String, image: UIImage) {
+    private func uploadImage(image: UIImage) {
         showSpinner()
         ApiManager
-            .uploadImageOnAPI(token: token, image: image, name: "String")
+            .uploadImageOnAPI(image: image, name: "String")
             .done { [weak self] (media) in
                 guard let `self` = self else { return }
                 
