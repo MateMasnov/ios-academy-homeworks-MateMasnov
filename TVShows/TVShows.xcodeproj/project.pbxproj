@@ -30,7 +30,6 @@
 		5CE584BC211237F0000AECCB /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584BB211237F0000AECCB /* CommentsViewController.swift */; };
 		5CE584BE211237FA000AECCB /* Comments.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CE584BD211237FA000AECCB /* Comments.storyboard */; };
 		5CE584C021123ACB000AECCB /* CommentsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584BF21123ACB000AECCB /* CommentsTableViewCell.swift */; };
-		5CE584C221123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584C121123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift */; };
 		5CE584C8211245C0000AECCB /* Comments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE584C7211245C0000AECCB /* Comments.swift */; };
 		5CE6D8AC2109CAA600C4105D /* ShowDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE6D8AB2109CAA600C4105D /* ShowDetailsViewController.swift */; };
 		5CE6D8AF2109CC1C00C4105D /* Details.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5CE6D8AE2109CC1C00C4105D /* Details.storyboard */; };
@@ -72,7 +71,6 @@
 		5CE584BB211237F0000AECCB /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
 		5CE584BD211237FA000AECCB /* Comments.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Comments.storyboard; sourceTree = "<group>"; };
 		5CE584BF21123ACB000AECCB /* CommentsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsTableViewCell.swift; sourceTree = "<group>"; };
-		5CE584C121123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsEmptyStateTableViewCell.swift; sourceTree = "<group>"; };
 		5CE584C7211245C0000AECCB /* Comments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comments.swift; sourceTree = "<group>"; };
 		5CE6D8AB2109CAA600C4105D /* ShowDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowDetailsViewController.swift; sourceTree = "<group>"; };
 		5CE6D8AE2109CC1C00C4105D /* Details.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Details.storyboard; sourceTree = "<group>"; };
@@ -207,7 +205,6 @@
 				5CE584BB211237F0000AECCB /* CommentsViewController.swift */,
 				5CE584BD211237FA000AECCB /* Comments.storyboard */,
 				5CE584BF21123ACB000AECCB /* CommentsTableViewCell.swift */,
-				5CE584C121123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift */,
 			);
 			path = EpisodeComments;
 			sourceTree = "<group>";
@@ -412,7 +409,6 @@
 				5CE6D8BD210A4F1300C4105D /* AddEpisodeViewController.swift in Sources */,
 				5CE6D8BF210A6DEB00C4105D /* Episode.swift in Sources */,
 				5CEB358621136EF8006F1C37 /* RefreshControl.swift in Sources */,
-				5CE584C221123AF2000AECCB /* CommentsEmptyStateTableViewCell.swift in Sources */,
 				5CE584B32112223C000AECCB /* EpisodeDetailsTableViewCell.swift in Sources */,
 				5C92E5E7210F71AF00E6584F /* HomeGridCollectionViewCell.swift in Sources */,
 				5CE6D8B32109D35F00C4105D /* ShowDescriptionTableViewCell.swift in Sources */,

@@ -22,6 +22,7 @@ class CommentsViewController: UIViewController, Progressable {
     }
     
     //MARK: - Outlets -
+    @IBOutlet var emptyStateView: UIView!
     @IBOutlet weak var commentsTextView: UITextView!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView! {
@@ -220,30 +221,23 @@ extension CommentsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if commentsList.count == 0 {
-            return 1
+            tableView.backgroundView = emptyStateView
+            return 0
         }
         
+        tableView.backgroundView = nil
         return commentsList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if commentsList.count <= 0 {
-            let cell: CommentsEmptyStateTableViewCell = tableView.dequeueReusableCell(
-                withIdentifier: "CommentsEmptyStateTableViewCell",
-                for: indexPath
-                ) as! CommentsEmptyStateTableViewCell
+        let cell: CommentsTableViewCell = tableView.dequeueReusableCell(
+            withIdentifier: "CommentsTableViewCell",
+            for: indexPath
+            ) as! CommentsTableViewCell
             
-            return cell
-        } else {
-            let cell: CommentsTableViewCell = tableView.dequeueReusableCell(
-                withIdentifier: "CommentsTableViewCell",
-                for: indexPath
-                ) as! CommentsTableViewCell
+        cell.configure(with: commentsList[indexPath.row])
             
-            cell.configure(with: commentsList[indexPath.row])
-            
-            return cell
-        }
+        return cell
     }
 }
 
