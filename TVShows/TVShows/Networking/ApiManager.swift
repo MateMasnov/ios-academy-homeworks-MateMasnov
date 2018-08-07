@@ -10,7 +10,6 @@ import Foundation
 import CodableAlamofire
 import Alamofire
 import PromiseKit
-import CoreMedia
 
 class ApiManager {
 
@@ -38,7 +37,6 @@ class ApiManager {
                     }
                     
                     seal.fulfill(())
-                    
                 })
         }
     }
@@ -71,8 +69,7 @@ class ApiManager {
         }
     }
     
-    static func uploadImageOnAPI(token: String, image: UIImage, name: String) -> Promise<Media>
-    {
+    static func uploadImageOnAPI(token: String, image: UIImage, name: String) -> Promise<Media> {
         let headers = ["Authorization": token]
         let imageByteData = UIImagePNGRepresentation(image)!
         
@@ -103,7 +100,7 @@ class ApiManager {
                                 }
                         }
                     case .failure(let encodingError):
-                        print(encodingError)
+                        seal.reject(encodingError)
                     }
                 }
             }

@@ -18,6 +18,8 @@ class EpisodeDetailsTableViewCell: UITableViewCell {
     
     //MARK: - Functions -
     override func prepareForReuse() {
+        super.prepareForReuse()
+        
         titleLabel.text = nil
         descriptionLabel.text = nil
         detailsLabel.text = nil

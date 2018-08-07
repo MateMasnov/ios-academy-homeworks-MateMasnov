@@ -62,6 +62,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
                                             style: .plain,
                                             target: self,
                                             action: #selector(butonTapped(sender:)))
+        
         navigationItem.rightBarButtonItem = toggleButton
     }
     
@@ -77,7 +78,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
         isListView = !isListView
         
         collectionView.reloadData()
-        navigationItem.setRightBarButton(toggleButton, animated: true)
     }
     
     @objc private func _logoutActionHandler() {
@@ -95,7 +95,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
     //MARK: - API functions -
     private func loadShows() {
         showSpinner()
-        ApiManager.makeAPICall(url: Constants.URL.showsUrl, headers: ["Authorization": token])
+        ApiManager
+            .makeAPICall(url: Constants.URL.showsUrl, headers: ["Authorization": token])
             .done { [weak self] (responseArray: [Show]) in
                 guard let `self` = self else { return }
                 

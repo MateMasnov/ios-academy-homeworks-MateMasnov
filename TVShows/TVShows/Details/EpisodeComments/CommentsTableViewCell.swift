@@ -14,6 +14,8 @@ class CommentsTableViewCell: UITableViewCell {
     @IBOutlet weak var commentsTextLabel: UILabel!
     
     override func prepareForReuse() {
+        super.prepareForReuse()
+        
         commentsTextLabel.text = nil
         commentsUserLabel.text = nil
     }
