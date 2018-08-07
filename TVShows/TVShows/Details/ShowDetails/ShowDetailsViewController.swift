@@ -58,7 +58,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
             tableView.addSubview(refresher)
         }
         
-        refresher.tintColor = UIColor(rgb: 0xFF758C)
+        refresher.tintColor = Constants.Color.application
         refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refresher.addTarget(self, action: #selector(refreshDetails(_:)), for: .valueChanged)
     }

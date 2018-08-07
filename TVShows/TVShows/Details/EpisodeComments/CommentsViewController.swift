@@ -49,9 +49,11 @@ class CommentsViewController: UIViewController, Progressable {
     
     //MARK: - Notification functions -
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         registerKeyboardNotifications()
         navigationController?.navigationBar.barTintColor = .white
-        navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
+        navigationController?.navigationBar.tintColor = Constants.Color.application
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
@@ -105,6 +107,7 @@ class CommentsViewController: UIViewController, Progressable {
         commentsTextView.layer.cornerRadius = 18
         commentsTextView.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         commentsTextView.layer.borderWidth = 0.5
+        commentsTextView.contentInset = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 18)
     }
 
     private func setupRefresher() {
@@ -114,7 +117,7 @@ class CommentsViewController: UIViewController, Progressable {
             tableView.addSubview(refresher)
         }
         
-        refresher.tintColor = UIColor(rgb: 0xFF758C)
+        refresher.tintColor = Constants.Color.application
         refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refresher.addTarget(self, action: #selector(refreshDetails(_:)), for: .valueChanged)
     }
@@ -151,8 +154,12 @@ class CommentsViewController: UIViewController, Progressable {
         showSpinner()
         ApiManager.makeAPICall(url: url, method: .post, parameters: parameters)
             .done { [weak self] (comment: Comments) in
-                self?.commentsList.append(comment)
-                self?.commentsTextView.text = nil
+                guard let `self` = self else { return }
+               
+                self.commentsList.append(comment)
+                self.commentsTextView.text = nil
+                self.commentsTextView.isEditable = false
+                self.commentsTextView.isEditable = true
             }
             .catch { [weak self] (error) in
                 self?.presentAlert(title: "Input error", message: "Invalid user input")
@@ -191,7 +198,6 @@ class CommentsViewController: UIViewController, Progressable {
     @IBAction func addCommentAction(_ sender: Any) {
         postComment()
     }
-    
 }
 
 //MARK: - Extensions -
@@ -205,7 +211,7 @@ extension CommentsViewController: UITableViewDelegate {
             self.deleteComment(commentId: self.commentsList[indexPath.row].id, indexPath: indexPath)
         }
         
-        deleteButton.backgroundColor = UIColor(rgb: 0xFF758C)
+        deleteButton.backgroundColor = Constants.Color.application
         
         return [deleteButton]
     }

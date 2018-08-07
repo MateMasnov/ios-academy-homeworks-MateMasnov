@@ -45,15 +45,8 @@ class AddEpisodeViewController: UIViewController, Progressable {
         super.viewWillAppear(animated)
     
         navigationController?.navigationBar.barTintColor = .white
-        navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
+        navigationController?.navigationBar.tintColor = Constants.Color.application
         registerKeyboardNotifications()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
     }
     
     private func setNavigationItems() {
@@ -99,6 +92,13 @@ class AddEpisodeViewController: UIViewController, Progressable {
                 object: nil)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
+    }
+
     //MARK: - Bar button actions -
     @objc private func didSelectAddShow() {
         guard let imageToUpload = imageToUpload else {
@@ -252,12 +252,15 @@ extension AddEpisodeViewController: UITextFieldDelegate {
         if textField == episodeTitleField {
             seasonNumberField.becomeFirstResponder()
         }
+        
         if textField == seasonNumberField {
             episodeNumberField.becomeFirstResponder()
         }
+        
         if textField == episodeNumberField {
             episodeDescriptionField.becomeFirstResponder()
         }
+        
         if textField == episodeDescriptionField {
             textField.resignFirstResponder()
             didSelectAddShow()

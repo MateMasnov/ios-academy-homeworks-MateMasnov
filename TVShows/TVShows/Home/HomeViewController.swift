@@ -42,7 +42,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
         super.viewWillAppear(animated)
         
         navigationController?.navigationBar.barTintColor = .white
-        navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
+        navigationController?.navigationBar.tintColor = Constants.Color.application
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
     

@@ -27,6 +27,8 @@ class LoginViewController: UIViewController, Progressable {
         super.viewDidLoad()
         
         checkKeychainLogin()
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -208,5 +210,19 @@ class LoginViewController: UIViewController, Progressable {
     @IBAction
     private func checkmarkAction(_ sender: UIButton) {
         checkmarkButton.isSelected = !checkmarkButton.isSelected
+    }
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == emailTextField {
+            passwordTextField.becomeFirstResponder()
+        } else {
+            passwordTextField.resignFirstResponder()
+            loginAction(loginButton)
+        }
+        
+        return true
     }
 }

@@ -157,7 +157,7 @@
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="UKa-Js-ltW">
                             <rect key="frame" x="20" y="20" width="324" height="355"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-placehoder-comments" translatesAutoresizingMaskIntoConstraints="NO" id="yS7-OZ-55v">
+                                <imageView userInteractionEnabled="NO" contentMode="bottom" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-placehoder-comments" translatesAutoresizingMaskIntoConstraints="NO" id="yS7-OZ-55v">
                                     <rect key="frame" x="108.5" y="0.0" width="107" height="200"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="200" id="eBr-lu-XHa"/>
