@@ -21,14 +21,14 @@ class LoginViewController: UIViewController, Progressable {
     @IBOutlet weak var scrollView: UIScrollView!
     
     //MARK: - Private -
-    private var user: User?
-    private var loginData: LoginData?
     
     //MARK: - Controller functions -
     override func viewDidLoad() {
         super.viewDidLoad()
         
         checkKeychainLogin()
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -119,13 +119,12 @@ class LoginViewController: UIViewController, Progressable {
                                                  textFields: textFields)
     }
     
-    private func navigateToHomeViewController(loginData: LoginData) {
+    private func navigateToHomeViewController() {
         let homeStoryboard: UIStoryboard = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController =
             homeStoryboard.instantiateViewController(withIdentifier: "HomeViewController")
                 as! HomeViewController
         
-        homeViewController.setToken(token: loginData.token)
         homeViewController.title = "TV Shows"
         
         navigationController?.setViewControllers([homeViewController], animated: true)
@@ -134,12 +133,11 @@ class LoginViewController: UIViewController, Progressable {
     //MARK: - Api functions -
     private func register(parameters: [String: String]) {
         showSpinner()
-        ApiManager.registerAPICall(parameters: parameters)
-            .done { [weak self] (user) in
-                guard let `self` = self else { return }
-                
-                self.user = user
-                self.login(parameters: parameters)
+        ApiManager.makeAPICall(url: Constants.URL.usersUrl,
+                               method: .post,
+                               parameters: parameters)
+            .done { [weak self] (user: User) in
+                self?.login(parameters: parameters)
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
@@ -156,8 +154,10 @@ class LoginViewController: UIViewController, Progressable {
     
     private func login(parameters: [String: String]) {
         showSpinner()
-        ApiManager.loginAPICall(parameters: parameters)
-            .done { [weak self] (loginData) in
+        ApiManager.makeAPICall(url: "\(Constants.URL.usersUrl)/sessions",
+                               method: .post,
+                               parameters: parameters)
+            .done { [weak self] (loginData: LoginData) in
                 guard let `self` = self else { return }
                 
                 if self.checkmarkButton.isSelected {
@@ -166,8 +166,9 @@ class LoginViewController: UIViewController, Progressable {
                     keychain["password"] = parameters["password"]
                 }
                 
-                self.loginData = loginData
-                self.navigateToHomeViewController(loginData: loginData)
+                ApiManager.initializeSession(token: loginData.token)
+                
+                self.navigateToHomeViewController()
             }
             .catch { [weak self] (error) in
                 guard let `self` = self else { return }
@@ -209,5 +210,19 @@ class LoginViewController: UIViewController, Progressable {
     @IBAction
     private func checkmarkAction(_ sender: UIButton) {
         checkmarkButton.isSelected = !checkmarkButton.isSelected
+    }
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == emailTextField {
+            passwordTextField.becomeFirstResponder()
+        } else {
+            passwordTextField.resignFirstResponder()
+            loginAction(loginButton)
+        }
+        
+        return true
     }
 }

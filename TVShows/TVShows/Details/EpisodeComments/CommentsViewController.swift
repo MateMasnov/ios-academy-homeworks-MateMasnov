@@ -10,9 +10,9 @@ import UIKit
 import PromiseKit
 
 class CommentsViewController: UIViewController, Progressable {
+    
     //MARK: - Privates -
     private let refresher = UIRefreshControl()
-    private var token: String!
     private var episodeId: String!
     private var commentsList: [Comments] = [] {
         didSet {
@@ -21,6 +21,7 @@ class CommentsViewController: UIViewController, Progressable {
     }
     
     //MARK: - Outlets -
+    @IBOutlet var emptyStateView: UIView!
     @IBOutlet weak var commentsTextView: UITextView!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView! {
@@ -29,6 +30,7 @@ class CommentsViewController: UIViewController, Progressable {
             tableView.delegate = self
             tableView.estimatedRowHeight = 100
             tableView.separatorStyle = .none
+            tableView.tableFooterView = UIView()
         }
     }
     
@@ -38,20 +40,20 @@ class CommentsViewController: UIViewController, Progressable {
 
         setupTextView()
         setupRefresher()
-        tableView.tableFooterView = UIView()
         loadComments()
     }
 
-    func setup(episodeId: String, token: String) {
+    func setEpisodeId(episodeId: String) {
         self.episodeId = episodeId
-        self.token = token
     }
     
     //MARK: - Notification functions -
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         registerKeyboardNotifications()
         navigationController?.navigationBar.barTintColor = .white
-        navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
+        navigationController?.navigationBar.tintColor = Constants.Color.application
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
@@ -63,13 +65,21 @@ class CommentsViewController: UIViewController, Progressable {
     }
     
     @objc private func keyboardWillShow(_ notification: Notification) {
-        bottomConstraint.constant += CGFloat(self.getKeyboardHeight(notification: notification))
-        view.layoutIfNeeded()
+        let height: CGFloat = getKeyboardHeight(notification: notification)
+        
+        bottomConstraint.constant += CGFloat(height)
+        view.setNeedsLayout()
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
     }
     
     @objc private func keyboardWillHide(_ notification: Notification) {
         bottomConstraint.constant = CGFloat(20)
-        view.layoutIfNeeded()
+        view.setNeedsLayout()
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
     }
     
     private func registerKeyboardNotifications() {
@@ -97,6 +107,7 @@ class CommentsViewController: UIViewController, Progressable {
         commentsTextView.layer.cornerRadius = 18
         commentsTextView.layer.borderColor = UIColor.gray.withAlphaComponent(0.5).cgColor
         commentsTextView.layer.borderWidth = 0.5
+        commentsTextView.contentInset = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 18)
     }
 
     private func setupRefresher() {
@@ -106,7 +117,7 @@ class CommentsViewController: UIViewController, Progressable {
             tableView.addSubview(refresher)
         }
         
-        refresher.tintColor = UIColor(rgb: 0xFF758C)
+        refresher.tintColor = Constants.Color.application
         refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refresher.addTarget(self, action: #selector(refreshDetails(_:)), for: .valueChanged)
     }
@@ -118,9 +129,12 @@ class CommentsViewController: UIViewController, Progressable {
     
     //MARK: - Api functions -
     private func loadComments() {
+        guard let episodeId = episodeId else { return }
+        let url: String = Constants.URL.episodesUrl + "/\(episodeId)" + Constants.URL.baseCommentsUrl
+        
         showSpinner()
-        ApiManager.getAllComments(episodeId: episodeId, token: token)
-            .done { [weak self] (comments) in
+        ApiManager.makeAPICall(url: url)
+            .done { [weak self] (comments: [Comments]) in
                 self?.commentsList = comments
             }
             .catch { [weak self] (error) in
@@ -136,11 +150,16 @@ class CommentsViewController: UIViewController, Progressable {
             return
         }
         
+        let url: String = Constants.URL.baseApiUrl + Constants.URL.baseCommentsUrl
         showSpinner()
-        ApiManager.addComment(parameters: parameters, token: token)
-            .done { [weak self] (comment) in
-                self?.commentsList.append(comment)
-                self?.commentsTextView.text = nil
+        ApiManager.makeAPICall(url: url, method: .post, parameters: parameters)
+            .done { [weak self] (comment: Comments) in
+                guard let `self` = self else { return }
+               
+                self.commentsList.append(comment)
+                self.commentsTextView.text = nil
+                self.commentsTextView.isEditable = false
+                self.commentsTextView.isEditable = true
             }
             .catch { [weak self] (error) in
                 self?.presentAlert(title: "Input error", message: "Invalid user input")
@@ -152,10 +171,9 @@ class CommentsViewController: UIViewController, Progressable {
     
     private func deleteComment(commentId: String, indexPath: IndexPath) {
         showSpinner()
-        ApiManager.deleteComment(commentId: commentId, token: token)
+        ApiManager.deleteComment(commentId: commentId)
             .done { [weak self] _ in
                 self?.commentsList.remove(at: indexPath.row)
-//                self?.tableView.deleteRows(at: [indexPath], with: .left)
             }.catch { [weak self] (error) in
                 self?.presentAlert(title: "Api error", message: "Something gone wrong")
             }.finally { [weak self] in
@@ -165,9 +183,7 @@ class CommentsViewController: UIViewController, Progressable {
     
     private func getParameters() -> [String: String]? {
         guard
-            let text =
-                commentsTextView.text,
-                !text.isEmpty
+            let text = commentsTextView.text, !text.isEmpty
             else {
                 return nil
         }
@@ -182,7 +198,6 @@ class CommentsViewController: UIViewController, Progressable {
     @IBAction func addCommentAction(_ sender: Any) {
         postComment()
     }
-    
 }
 
 //MARK: - Extensions -
@@ -196,7 +211,7 @@ extension CommentsViewController: UITableViewDelegate {
             self.deleteComment(commentId: self.commentsList[indexPath.row].id, indexPath: indexPath)
         }
         
-        deleteButton.backgroundColor = UIColor(rgb: 0xFF758C)
+        deleteButton.backgroundColor = Constants.Color.application
         
         return [deleteButton]
     }
@@ -210,30 +225,23 @@ extension CommentsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if commentsList.count == 0 {
-            return 1
+            tableView.backgroundView = emptyStateView
+            return 0
         }
         
+        tableView.backgroundView = nil
         return commentsList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if commentsList.count <= 0 {
-            let cell: CommentsEmptyStateTableViewCell = tableView.dequeueReusableCell(
-                withIdentifier: "CommentsEmptyStateTableViewCell",
-                for: indexPath
-                ) as! CommentsEmptyStateTableViewCell
+        let cell: CommentsTableViewCell = tableView.dequeueReusableCell(
+            withIdentifier: "CommentsTableViewCell",
+            for: indexPath
+            ) as! CommentsTableViewCell
             
-            return cell
-        } else {
-            let cell: CommentsTableViewCell = tableView.dequeueReusableCell(
-                withIdentifier: "CommentsTableViewCell",
-                for: indexPath
-                ) as! CommentsTableViewCell
+        cell.configure(with: commentsList[indexPath.row])
             
-            cell.configure(with: commentsList[indexPath.row])
-            
-            return cell
-        }
+        return cell
     }
 }
 

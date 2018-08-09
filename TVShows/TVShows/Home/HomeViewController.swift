@@ -13,7 +13,6 @@ import KeychainAccess
 class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, Progressable {
 
     //MARK: - Privates -
-    private var token: String!
     private var isListView: Bool = true
     private var toggleButton: UIBarButtonItem?
     private var shows: [Show] = [] {
@@ -43,12 +42,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
         super.viewWillAppear(animated)
         
         navigationController?.navigationBar.barTintColor = .white
-        navigationController?.navigationBar.tintColor = UIColor(rgb: 0xFF758C)
+        navigationController?.navigationBar.tintColor = Constants.Color.application
         navigationController?.setNavigationBarHidden(false, animated: true)
-    }
-
-    func setToken(token: String) {
-        self.token = token
     }
     
     private func setNavigationItems() {
@@ -62,6 +57,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
                                             style: .plain,
                                             target: self,
                                             action: #selector(butonTapped(sender:)))
+        
         navigationItem.rightBarButtonItem = toggleButton
     }
     
@@ -77,7 +73,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
         isListView = !isListView
         
         collectionView.reloadData()
-        navigationItem.setRightBarButton(toggleButton, animated: true)
     }
     
     @objc private func _logoutActionHandler() {
@@ -95,8 +90,9 @@ class HomeViewController: UIViewController, UICollectionViewDelegateFlowLayout, 
     //MARK: - API functions -
     private func loadShows() {
         showSpinner()
-        ApiManager.getShowsAPICall(token: token)
-            .done { [weak self] (responseArray) in
+        ApiManager
+            .makeAPICall(url: Constants.URL.showsUrl)
+            .done { [weak self] (responseArray: [Show]) in
                 guard let `self` = self else { return }
                 
                 self.shows = responseArray
@@ -121,7 +117,7 @@ extension HomeViewController: UICollectionViewDelegate {
             detailsStoryboard.instantiateViewController(withIdentifier: "ShowDetailsViewController")
                 as! ShowDetailsViewController
         
-        showDetailsViewController.setup(token: token, showId: shows[indexPath.row].id)
+        showDetailsViewController.setShowId(showId: shows[indexPath.row].id)
         
         navigationController?.show(showDetailsViewController, sender: self)
     }

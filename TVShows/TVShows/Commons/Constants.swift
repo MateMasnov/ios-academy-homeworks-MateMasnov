@@ -25,4 +25,8 @@ enum Constants {
     enum KeychainEnum {
         static let keychain = Keychain(service: "TVShows")
     }
+    
+    enum Color {
+        static let application = UIColor(rgb: 0xFF758C)
+    }
 }

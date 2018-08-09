@@ -13,7 +13,6 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
 
     
     private var episodeId: String!
-    private var token: String!
     private var episodeDetails: Episode? {
         didSet {
             tableView.reloadData()
@@ -26,13 +25,13 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
             tableView.delegate = self
             tableView.estimatedRowHeight = 100
             tableView.separatorStyle = .none
+            tableView.tableFooterView = UIView()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.tableFooterView = UIView()
         loadEpisodeDetails()
     }
     
@@ -42,15 +41,16 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    func setup(episodeId: String, token: String) {
-        self.token = token
+    func setEpisodeId(episodeId: String) {
         self.episodeId = episodeId
     }
     
     private func loadEpisodeDetails() {
+        guard let episodeId = episodeId else { return }
+
         showSpinner()
-        ApiManager.getEpisodeDetailsAPICall(episodeId: episodeId, token: token)
-            .done { [weak self] (episode) in
+        ApiManager.makeAPICall(url: "\(Constants.URL.episodesUrl)/\(episodeId)")
+            .done { [weak self] (episode: Episode) in
                 self?.episodeDetails = episode
             }
             .catch { [weak self] (error) in
@@ -73,7 +73,7 @@ class EpisodeDetailsViewController: UIViewController, Progressable {
         
         guard let episodeDetails = episodeDetails else { return }
         
-        commentsViewController.setup(episodeId: episodeDetails.id, token: token)
+        commentsViewController.setEpisodeId(episodeId: episodeDetails.id)
         commentsViewController.title = "Comments"
         
         navigationController?.show(commentsViewController, sender: self)

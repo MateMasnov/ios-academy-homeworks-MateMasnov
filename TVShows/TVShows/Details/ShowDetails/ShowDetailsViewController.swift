@@ -13,7 +13,6 @@ class ShowDetailsViewController: UIViewController, Progressable {
 
     //MARK: - Privates -
     private var showId: String!
-    private var token: String!
     private let refresher: UIRefreshControl = UIRefreshControl()
     private var showDetails: ShowDetails?
     private var episodesList: [Episode] = [] {
@@ -30,6 +29,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
             tableView.estimatedRowHeight = 100
             tableView.separatorStyle = .none
             tableView.contentInset.bottom = 80
+            tableView.tableFooterView = UIView()
         }
     }
     
@@ -37,7 +37,6 @@ class ShowDetailsViewController: UIViewController, Progressable {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.tableFooterView = UIView()
         setRefresher()
         loadDetails()
     }
@@ -48,8 +47,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
-    func setup(token: String, showId: String) {
-        self.token = token
+    func setShowId(showId: String) {
         self.showId = showId
     }
 
@@ -60,7 +58,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
             tableView.addSubview(refresher)
         }
         
-        refresher.tintColor = UIColor(rgb: 0xFF758C)
+        refresher.tintColor = Constants.Color.application
         refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refresher.addTarget(self, action: #selector(refreshDetails(_:)), for: .valueChanged)
     }
@@ -72,13 +70,15 @@ class ShowDetailsViewController: UIViewController, Progressable {
     
     //MARK: - API functions -
     private func loadDetails() {
+        let showId: String = self.showId
+        
         showSpinner()
-        ApiManager.getShowDetailsAPICall(token: token, showId: showId)
-            .then({ (showDetails) -> Promise<[Episode]> in
-                self.showDetails = showDetails
-                return ApiManager.getAllEpisodesAPICall(token: self.token, showId: self.showId)
+        ApiManager.makeAPICall(url: "\(Constants.URL.showsUrl)/\(showId)")
+            .then({ [weak self] (showDetails: ShowDetails) -> Promise<[Episode]> in
+                self?.showDetails = showDetails
+                return ApiManager.makeAPICall(url: "\(Constants.URL.showsUrl)/\(showId)/episodes")
             })
-            .done { [weak self] (episodes) in
+            .done { [weak self] (episodes: [Episode]) in
                 self?.episodesList = episodes
             }
             .catch { [weak self] (error) in
@@ -105,7 +105,7 @@ class ShowDetailsViewController: UIViewController, Progressable {
         
         addEpisodeViewController.title = "Add episode"
         addEpisodeViewController.delegate = self
-        addEpisodeViewController.setup(token: token, showId: showId)
+        addEpisodeViewController.setShowId(showId: showId)
         
         present(navigationController, animated: true, completion: nil)
     }
@@ -130,7 +130,7 @@ extension ShowDetailsViewController: UITableViewDelegate {
             episodeStoryboard.instantiateViewController(withIdentifier: "EpisodeDetailsViewController")
                 as! EpisodeDetailsViewController
         
-        episodeDetailsViewController.setup(episodeId: episodesList[indexPath.row - 2].id, token: token)
+        episodeDetailsViewController.setEpisodeId(episodeId: episodesList[indexPath.row - 2].id)
         
         navigationController?.show(episodeDetailsViewController, sender: self)
         
