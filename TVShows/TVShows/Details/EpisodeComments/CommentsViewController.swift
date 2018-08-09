@@ -248,16 +248,16 @@ extension CommentsViewController: UITableViewDataSource {
 extension CommentsViewController: UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        if commentsTextView.textColor == UIColor.lightGray {
+        if commentsTextView.textColor == .lightGray {
             commentsTextView.text = nil
-            commentsTextView.textColor = UIColor.black
+            commentsTextView.textColor = .black
         }
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
         if commentsTextView.text.isEmpty {
             commentsTextView.text = "Add a comment..."
-            commentsTextView.textColor = UIColor.lightGray
+            commentsTextView.textColor = .lightGray
         }
     }
 }

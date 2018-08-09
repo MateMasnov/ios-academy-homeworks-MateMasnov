@@ -42,7 +42,6 @@
 		5CE6D8BD210A4F1300C4105D /* AddEpisodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE6D8BC210A4F1300C4105D /* AddEpisodeViewController.swift */; };
 		5CE6D8BF210A6DEB00C4105D /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE6D8BE210A6DEB00C4105D /* Episode.swift */; };
 		5CEB35842113558C006F1C37 /* Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CEB35832113558C006F1C37 /* Media.swift */; };
-		5CEB358621136EF8006F1C37 /* RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CEB358521136EF8006F1C37 /* RefreshControl.swift */; };
 		7BD6575A4E290E927D21AE7E /* Pods_TVShows.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5547BA5CD6C30B7F19014FA /* Pods_TVShows.framework */; };
 /* End PBXBuildFile section */
 
@@ -84,7 +83,6 @@
 		5CE6D8BC210A4F1300C4105D /* AddEpisodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEpisodeViewController.swift; sourceTree = "<group>"; };
 		5CE6D8BE210A6DEB00C4105D /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
 		5CEB35832113558C006F1C37 /* Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Media.swift; sourceTree = "<group>"; };
-		5CEB358521136EF8006F1C37 /* RefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshControl.swift; sourceTree = "<group>"; };
 		9E72D561D095588A2D2D42D2 /* Pods-TVShows.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.release.xcconfig"; path = "Pods/Target Support Files/Pods-TVShows/Pods-TVShows.release.xcconfig"; sourceTree = "<group>"; };
 		B5547BA5CD6C30B7F19014FA /* Pods_TVShows.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TVShows.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C291D8AE13167F4CBFF71C87 /* Pods-TVShows.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TVShows.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TVShows/Pods-TVShows.debug.xcconfig"; sourceTree = "<group>"; };
@@ -175,7 +173,6 @@
 				5C5E80B22108BB8100F0A16A /* Alert.swift */,
 				5C1DAB7E210DFABD00E6CA96 /* Notifications.swift */,
 				5CC5D8D621106B8A00BA10CE /* Constants.swift */,
-				5CEB358521136EF8006F1C37 /* RefreshControl.swift */,
 			);
 			path = Commons;
 			sourceTree = "<group>";
@@ -412,7 +409,6 @@
 				5C5E80B32108BB8100F0A16A /* Alert.swift in Sources */,
 				5CE6D8BD210A4F1300C4105D /* AddEpisodeViewController.swift in Sources */,
 				5CE6D8BF210A6DEB00C4105D /* Episode.swift in Sources */,
-				5CEB358621136EF8006F1C37 /* RefreshControl.swift in Sources */,
 				5CE584B32112223C000AECCB /* EpisodeDetailsTableViewCell.swift in Sources */,
 				5C92E5E7210F71AF00E6584F /* HomeGridCollectionViewCell.swift in Sources */,
 				5CE6D8B32109D35F00C4105D /* ShowDescriptionTableViewCell.swift in Sources */,

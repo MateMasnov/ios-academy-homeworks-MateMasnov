@@ -88,21 +88,24 @@ class ApiManager {
                 { result in
                     switch result {
                     case .success(let uploadRequest, _, _):
-                        uploadRequest
-                            .responseDecodableObject(keyPath: "data") {
-                                (response: DataResponse<Media>) in
-                                
-                                switch response.result {
-                                case .success(let media):
-                                    seal.fulfill(media)
-                                case .failure(let error):
-                                    seal.reject(error)
-                                }
-                        }
+                        processUploadRequest(uploadRequest, seal: seal)
                     case .failure(let encodingError):
                         seal.reject(encodingError)
                     }
                 }
             }
+    }
+    
+    static func processUploadRequest(_ uploadRequest: UploadRequest, seal: Resolver<Media>) {
+        uploadRequest
+            .responseDecodableObject(keyPath: "data") {
+                (response: DataResponse<Media>) in
+                switch response.result {
+                case .success(let media):
+                    seal.fulfill(media)
+                case .failure(let error):
+                    seal.reject(error)
+                }
+        }
     }
 }
