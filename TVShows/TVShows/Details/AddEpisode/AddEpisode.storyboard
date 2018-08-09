@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Add Episode View Controller-->
+        <scene sceneID="2uT-NP-GiL">
+            <objects>
+                <viewController storyboardIdentifier="AddEpisodeViewController" id="6ac-bf-zk5" customClass="AddEpisodeViewController" customModule="TVShows" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="z3Q-Xm-J2x">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b1a-T2-Wkd">
+                                <rect key="frame" x="0.0" y="64" width="414" height="628"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1Cp-Ez-fLa">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="620"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IiP-R2-uSP">
+                                                <rect key="frame" x="139" y="160" width="136" height="40"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="u8Z-ek-9XW"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="22"/>
+                                                <state key="normal" title="Upload photo">
+                                                    <color key="titleColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="uploadPhotoAction:" destination="6ac-bf-zk5" eventType="touchUpInside" id="4cu-Ue-6EK"/>
+                                                </connections>
+                                            </button>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Brs-jF-lU5">
+                                                <rect key="frame" x="40" y="300" width="334" height="300"/>
+                                                <subviews>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Episode title" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="de5-I8-6Ai">
+                                                        <rect key="frame" x="0.0" y="0.0" width="334" height="60"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="60" id="Zdo-5j-TQJ"/>
+                                                        </constraints>
+                                                        <color key="textColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Season number" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="lSP-h0-Xan">
+                                                        <rect key="frame" x="0.0" y="80" width="334" height="60"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="60" id="D0A-KM-Jiw"/>
+                                                        </constraints>
+                                                        <color key="textColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Episode number" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="G0p-YA-2zq">
+                                                        <rect key="frame" x="0.0" y="160" width="334" height="60"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="60" id="Ttf-9O-gMi"/>
+                                                        </constraints>
+                                                        <color key="textColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Episode description" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Hq8-te-jQu">
+                                                        <rect key="frame" x="0.0" y="240" width="334" height="60"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="60" id="MLx-BE-TKV"/>
+                                                        </constraints>
+                                                        <color key="textColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                </subviews>
+                                            </stackView>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="photo-logo" translatesAutoresizingMaskIntoConstraints="NO" id="dQc-Kl-WFA">
+                                                <rect key="frame" x="100" y="50" width="214" height="100"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="100" id="hhF-96-LEv"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="dQc-Kl-WFA" secondAttribute="trailing" constant="100" id="10S-eA-7cc"/>
+                                            <constraint firstItem="dQc-Kl-WFA" firstAttribute="leading" secondItem="1Cp-Ez-fLa" secondAttribute="leading" constant="100" id="3lX-1F-uU0"/>
+                                            <constraint firstItem="Brs-jF-lU5" firstAttribute="centerX" secondItem="1Cp-Ez-fLa" secondAttribute="centerX" id="KhR-SM-0L7"/>
+                                            <constraint firstItem="Brs-jF-lU5" firstAttribute="leading" secondItem="1Cp-Ez-fLa" secondAttribute="leading" constant="40" id="NJW-Zc-jzt"/>
+                                            <constraint firstItem="IiP-R2-uSP" firstAttribute="top" secondItem="dQc-Kl-WFA" secondAttribute="bottom" constant="10" id="Ovs-Ku-iMr"/>
+                                            <constraint firstItem="dQc-Kl-WFA" firstAttribute="top" secondItem="1Cp-Ez-fLa" secondAttribute="top" constant="50" id="Q8O-Xd-OHC"/>
+                                            <constraint firstAttribute="bottom" secondItem="Brs-jF-lU5" secondAttribute="bottom" constant="20" id="Qrd-dk-zlM"/>
+                                            <constraint firstItem="IiP-R2-uSP" firstAttribute="centerX" secondItem="1Cp-Ez-fLa" secondAttribute="centerX" id="UGU-8o-ZUR"/>
+                                            <constraint firstItem="Brs-jF-lU5" firstAttribute="top" secondItem="IiP-R2-uSP" secondAttribute="bottom" constant="100" id="b2y-hA-rhf"/>
+                                            <constraint firstAttribute="trailing" secondItem="Brs-jF-lU5" secondAttribute="trailing" constant="40" id="wBt-uG-cgQ"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="1Cp-Ez-fLa" firstAttribute="leading" secondItem="b1a-T2-Wkd" secondAttribute="leading" id="Lls-9g-dyB"/>
+                                    <constraint firstAttribute="trailing" secondItem="1Cp-Ez-fLa" secondAttribute="trailing" id="VcO-VO-K0h"/>
+                                    <constraint firstItem="1Cp-Ez-fLa" firstAttribute="width" secondItem="b1a-T2-Wkd" secondAttribute="width" id="WfJ-eV-0ra"/>
+                                    <constraint firstItem="1Cp-Ez-fLa" firstAttribute="top" secondItem="b1a-T2-Wkd" secondAttribute="top" id="qFf-U4-PyT"/>
+                                    <constraint firstAttribute="bottom" secondItem="1Cp-Ez-fLa" secondAttribute="bottom" id="vRV-5j-7vG"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="b1a-T2-Wkd" firstAttribute="top" secondItem="Di3-B7-cKO" secondAttribute="top" id="VSq-15-RcT"/>
+                            <constraint firstItem="b1a-T2-Wkd" firstAttribute="leading" secondItem="Di3-B7-cKO" secondAttribute="leading" id="e9M-a8-OWG"/>
+                            <constraint firstItem="Di3-B7-cKO" firstAttribute="bottom" secondItem="b1a-T2-Wkd" secondAttribute="bottom" id="lKN-WV-aZ9"/>
+                            <constraint firstItem="Di3-B7-cKO" firstAttribute="trailing" secondItem="b1a-T2-Wkd" secondAttribute="trailing" id="v91-zp-4v2"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Di3-B7-cKO"/>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="CU9-3w-b0n">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="hnL-Lu-LQO">
+                            <color key="tintColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Add" id="Zan-em-7IV">
+                            <color key="tintColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="calibratedRGB"/>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="episodeDescriptionField" destination="Hq8-te-jQu" id="h7O-Tl-8jX"/>
+                        <outlet property="episodeNumberField" destination="G0p-YA-2zq" id="1ax-IW-KgL"/>
+                        <outlet property="episodeTitleField" destination="de5-I8-6Ai" id="W1X-yR-oZF"/>
+                        <outlet property="scrollView" destination="b1a-T2-Wkd" id="2KG-T6-Ta9"/>
+                        <outlet property="seasonNumberField" destination="lSP-h0-Xan" id="zYm-Qe-XAq"/>
+                        <outlet property="uploadImageView" destination="dQc-Kl-WFA" id="eaN-PZ-nWe"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WjX-qj-Rrl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1003" y="120"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="zQW-57-1y5">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Cl3-hT-nFo" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="zzV-cb-ktY">
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="6ac-bf-zk5" kind="relationship" relationship="rootViewController" id="gtM-Gd-eVs"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="wBx-hP-lpG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="146.37681159420291" y="119.83695652173914"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="photo-logo" width="24" height="24"/>
+    </resources>
+</document>
